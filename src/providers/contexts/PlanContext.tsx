@@ -2,7 +2,7 @@
 import useCreatePlan from '@/lib/hooks/queries/mutate/useCreatePlan';
 import useExitPrompt from '@/lib/hooks/useExitprompt';
 import { PlanSchema } from '@/types/schema/planSchema';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -32,10 +32,11 @@ const initialDatas = {
 export const PlanProvider: React.FC<{
   children: React.ReactNode;
   initialData?: PlanDataType;
-}> = ({ children, initialData }) => {
+}> = ({ children }) => {
   const [planData, setPlanData] = useState<PlanDataType>(
     initialDatas as PlanDataType
   );
+  const { planid } = useParams<{ planid: string }>();
   const [image, setImage] = useState<File | null>(null);
   const { setIsEditing } = useExitPrompt();
   const router = useRouter();
@@ -47,15 +48,28 @@ export const PlanProvider: React.FC<{
   useEffect(() => {
     setIsEditing(true);
 
-    if (!!initialData) {
-      setPlanData(initialData);
-    } else {
-      const storedData = localStorage.getItem('planData');
-      if (storedData) {
-        setPlanData(JSON.parse(storedData));
+    try {
+      const storedPlans = localStorage.getItem('planData');
+      const parsedPlans: LocalPlanDataType[] = storedPlans
+        ? JSON.parse(storedPlans)
+        : [];
+
+      const foundPlan = parsedPlans.find((e) => e.planId === planid);
+
+      if (foundPlan) {
+        setPlanData(foundPlan.planData);
+        return;
       }
+
+      const storedSinglePlan = localStorage.getItem('plan');
+      if (storedSinglePlan) {
+        setPlanData(JSON.parse(storedSinglePlan));
+        return;
+      }
+    } catch (error) {
+      console.error('로컬스토리지 데이터 로드 실패:', error);
     }
-  }, [initialData, setIsEditing]);
+  }, [planid, setIsEditing]);
 
   const handleSubmit = async () => {
     const validationResult = PlanSchema.safeParse(planData);

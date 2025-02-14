@@ -13,7 +13,7 @@ export type TMainCardList = {
 };
 
 export type TMypageCardList = {
-  planId: number;
+  planId: number | string;
   categories: string[];
   title: string;
   thumbnail: string | StaticImageData;

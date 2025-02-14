@@ -1,16 +1,20 @@
 'use client';
 
 import { usePlanContext } from '@/providers/contexts/PlanContext';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import PlanDayDetailCreate from './PlanDayDetailCreate';
 import useIntersectionObserver from '@/lib/hooks/useObserver';
 import Button from '@/components/common/Button';
 import toast from 'react-hot-toast';
+import { useQuery } from '@tanstack/react-query';
+import { useGetProfile } from '@/lib/hooks/queries/useGetProfile';
 
 const PlanDayCreates = () => {
   const [dayTab, setDayTab] = useState(1);
+  const { planid: planId } = useParams<{ planid: string }>();
   const { planData, handleSubmit } = usePlanContext();
+  const { data } = useQuery(useGetProfile());
   const router = useRouter();
   const tabHandler = (day: number) => {
     router.replace(`#Day-${day}`);
@@ -32,12 +36,35 @@ const PlanDayCreates = () => {
 
   const handleTempSave = () => {
     try {
-      localStorage.setItem('planData', JSON.stringify(planData));
+      const storedData = localStorage.getItem('planData');
+      let localStorageItems: LocalPlanDataType[] = [];
+
+      if (storedData) {
+        localStorageItems = JSON.parse(storedData) as LocalPlanDataType[];
+      }
+
+      const updatedData = localStorageItems.some(
+        (item) => item.planId === planId
+      )
+        ? localStorageItems.map((item) =>
+            item.planId === planId
+              ? { ...item, planData, userId: data?.data?.userId ?? '' }
+              : item
+          )
+        : [
+            ...localStorageItems,
+            { planData, planId, userId: data?.data?.userId ?? '' },
+          ];
+
+      localStorage.setItem('planData', JSON.stringify(updatedData));
+
       toast.success('임시 저장되었습니다!');
-    } catch {
+    } catch (e) {
+      console.error('임시 저장 오류:', e);
       toast.error('임시 저장에 실패했습니다.');
     }
   };
+
   return (
     <div className="flex w-full">
       <div className="flex-col space-y-[4.8rem]">

@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import { calculateTripDuration, generateDays } from '@/utils/dateUtils';
 import { STEP_TITLE } from '@/types/enum';
 import BackButton from './auth/login/BackButton';
-
+import toast from 'react-hot-toast';
 type BaseProps = {
   onClose: () => void;
 };
@@ -47,6 +47,7 @@ const PlanSetting = ({
   } = usePlanStore();
   const { selectedDetails } = region;
   const { endDay, startDay, numberOfPeople } = date;
+
   const router = useRouter();
 
   useEffect(() => {
@@ -71,50 +72,55 @@ const PlanSetting = ({
   }, []);
 
   const lastBtnSetting = () => {
-    if (!startDay || !endDay) return;
-
     const planId = uuidv4();
-    const subtitle = region.selectedDetails
-      .map((item) => (item.grandChild ? item.grandChild : item.child))
-      .join(' - ');
-    const day = calculateTripDuration({
-      endDate: endDay!,
-      startDate: startDay!,
-    });
-    const title = `${day?.nights}박 ${day?.days}일 여행`;
-    const days = generateDays({ startDay, endDay });
-    const initialPlanData: PlanDataType =
-      update && initialData
-        ? {
-            ...initialData,
-            startDate: startDay,
-            endDate: endDay,
-            category: region.selectedDetails,
-            people: numberOfPeople,
-            transportation: transport.selectedTransport ?? 'CAR',
-          }
-        : {
-            title,
-            subtitle,
-            startDate: startDay,
-            endDate: endDay,
-            category: region.selectedDetails,
-            people: numberOfPeople,
-            transportation: transport.selectedTransport ?? 'CAR',
-            days,
-          };
 
-    localStorage.setItem(
-      'planData',
-      JSON.stringify({ ...initialPlanData, planId }) //
-    );
-
-    localStorage.setItem(
-      'planData',
-      JSON.stringify({ ...initialPlanData, planId })
-    );
+    imsiSave();
     onClose();
     router.push(`/plan/${planId}/create`);
+  };
+
+  const imsiSave = () => {
+    if (!startDay || !endDay) return;
+    try {
+      const subtitle = region.selectedDetails
+        .map((item) => (item.grandChild ? item.grandChild : item.child))
+        .join(' - ');
+      const day = calculateTripDuration({
+        endDate: endDay!,
+        startDate: startDay!,
+      });
+      const title = `${day?.nights}박 ${day?.days}일 여행`;
+      const days = generateDays({ startDay, endDay });
+
+      const initialPlanData: PlanDataType =
+        update && initialData
+          ? {
+              ...initialData,
+              startDate: startDay,
+              endDate: endDay,
+              category: region.selectedDetails,
+              people: numberOfPeople,
+              transportation: transport.selectedTransport ?? 'CAR',
+            }
+          : {
+              title,
+              subtitle,
+              startDate: startDay,
+              endDate: endDay,
+              category: region.selectedDetails,
+              people: numberOfPeople,
+              transportation: transport.selectedTransport ?? 'CAR',
+              days,
+            };
+      localStorage.setItem(
+        'plan',
+        JSON.stringify({
+          ...initialPlanData,
+        })
+      );
+    } catch {
+      toast.error('초기생성 실패');
+    }
   };
 
   const renderStep = () => {

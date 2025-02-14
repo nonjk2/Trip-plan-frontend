@@ -14,15 +14,15 @@ const PlanSettingRouter = () => {
     if (!users?.data || isError) {
       return router.push('/login');
     }
-    const data = localStorage.getItem('planData');
-    if (!!data) {
-      const { planId } = JSON.parse(data);
-      if (window.confirm('작성중인 계획이있습니다 이동하시겠습니까?')) {
-        return router.push(`plan/${planId}/create`);
-      } else {
-        localStorage.removeItem('planData');
-      }
-    }
+    // const data = localStorage.getItem('planData');
+    // if (!!data) {
+    //   const { planId } = JSON.parse(data);
+    //   if (window.confirm('작성중인 계획이있습니다 이동하시겠습니까?')) {
+    //     return router.push(`plan/${planId}/create`);
+    //   } else {
+    //     localStorage.removeItem('planData');
+    //   }
+    // }
     setSettingModal(true);
   };
   return (

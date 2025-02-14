@@ -30,3 +30,9 @@ type PlanDataType = {
   people: number;
   days: PlanDayType[];
 };
+
+type LocalPlanDataType = {
+  planData: PlanDataType;
+  planId: string;
+  userId: number;
+};
