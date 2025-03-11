@@ -58,6 +58,12 @@ export const PlanProvider: React.FC<{
 
       if (foundPlan) {
         setPlanData(foundPlan.planData);
+        localStorage.setItem(
+          'plan',
+          JSON.stringify({
+            ...foundPlan,
+          })
+        );
         return;
       }
 

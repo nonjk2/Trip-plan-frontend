@@ -38,6 +38,7 @@ export async function POST(req: NextRequest) {
     const { accessToken, refreshToken, socialId } = await req.json();
 
     if (!accessToken || !refreshToken) {
+      cookieStore.delete('accessToken');
       return NextResponse.json({ error: '토큰이 없습니다.' }, { status: 400 });
     }
 

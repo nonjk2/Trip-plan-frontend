@@ -5,6 +5,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const cookieStore = await cookies();
   const isLoggedIn = !!cookieStore.get('accessToken');
+
   if (pathname.startsWith('/login') && !!isLoggedIn) {
     return NextResponse.redirect(new URL('/', request.url));
   }

@@ -35,4 +35,5 @@ type LocalPlanDataType = {
   planData: PlanDataType;
   planId: string;
   userId: number;
+  threadId?: string | null;
 };

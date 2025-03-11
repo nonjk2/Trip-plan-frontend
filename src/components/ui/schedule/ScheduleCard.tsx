@@ -26,6 +26,7 @@ const ScheduleCard = ({
     <div id={`Day${day}`}>
       <div className="flex flex-col gap-[1.6rem] text-[2rem] text-black leading-[3rem]">
         <div className="flex gap-[0.8rem] items-center">
+          <div className="absolute top-0" id={`Day-${day}`}></div>
           <h2 className="text-[2.4rem] font-semibold leading-[2.864rem]">
             Day {day}
           </h2>
@@ -43,26 +44,28 @@ const ScheduleCard = ({
         )}
       </div>
 
-      {scheduleData?.detail && scheduleData?.detail.length > 0 ? (
-        isDetailView ? (
-          <div className="mt-[3.6rem] min-h-[35.2rem]">
-            <ViewDetailedSchedule
-              placesData={scheduleData.detail as TPlanScheduleItem[]}
-            />
-          </div>
+      <div className="max-h-[60vh] overflow-auto">
+        {scheduleData?.detail && scheduleData?.detail.length > 0 ? (
+          isDetailView ? (
+            <div className="mt-[3.6rem] min-h-[35.2rem]">
+              <ViewDetailedSchedule
+                placesData={scheduleData.detail as TPlanScheduleItem[]}
+              />
+            </div>
+          ) : (
+            <div className="relative flex justify-between gap-[8rem] mt-[3.6rem] min-h-[35.2rem]">
+              <DetailedSchedule
+                placesData={scheduleData.detail as PlanDetailType[]}
+                day={day}
+              />
+            </div>
+          )
         ) : (
-          <div className="relative flex justify-between gap-[8rem] mt-[3.6rem] min-h-[35.2rem]">
-            <DetailedSchedule
-              placesData={scheduleData.detail as PlanDetailType[]}
-              day={day}
-            />
+          <div className="flex items-center justify-center min-h-[35.2rem] text-var-enable-text text-[2rem]">
+            스케쥴을 추가해주세요
           </div>
-        )
-      ) : (
-        <div className="flex items-center justify-center min-h-[35.2rem] text-var-enable-text text-[2rem]">
-          스케쥴을 추가해주세요
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

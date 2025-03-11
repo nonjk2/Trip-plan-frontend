@@ -9,6 +9,9 @@ import { default as Traffic } from './Traffic';
 import { default as Restaurant } from './Restaurant';
 import { default as Defalut } from './Defalut';
 import { default as Setting } from './Setting';
+import { default as AIIcon } from './AIAvatar';
+import { default as SendMessage } from './SendMessage';
+import { default as Date } from './Date';
 
 export const Icons = {
   DownTriangle,
@@ -22,6 +25,9 @@ export const Icons = {
   Restaurant,
   Defalut,
   Setting,
+  AIIcon,
+  SendMessage,
+  Date,
 };
 
 export default Icons;

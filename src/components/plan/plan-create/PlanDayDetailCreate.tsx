@@ -24,7 +24,7 @@ const PlanDayDetailCreate = ({
           />
         ))}
       </div>
-      <div className="sticky top-1/3 h-full w-[70rem] z-50 rounded-[1.2rem] overflow-hidden">
+      <div className="sticky top-[40%] h-full w-[70rem] z-50 rounded-[1.2rem] overflow-hidden">
         <KakaoMap
           detail={planData.days[dayTab - 1]?.detail || []}
           day={dayTab - 1}

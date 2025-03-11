@@ -14,7 +14,7 @@ interface PlanClientProps {
   planId: number;
 }
 
-const getCookieValue = (key: string): string => {
+export const getCookieValue = (key: string): string => {
   return Cookies.get(key) || '';
 };
 

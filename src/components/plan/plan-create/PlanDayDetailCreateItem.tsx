@@ -21,8 +21,8 @@ const PlanDayDetailCreateItem = ({
   };
   return (
     <article className="flex flex-col gap-[2rem] min-h-[100rem] relative">
-      <div className="absolute top-0" id={`Day-${item.day}`}></div>
-      <div className="flex flex-col justify-between sticky top-1/3">
+      {/* <div className="absolute top-0" id={`Day-${item.day}`}></div> */}
+      <div className="flex flex-col justify-between sticky top-[20%]">
         <ScheduleCard
           day={item.day}
           people={people}

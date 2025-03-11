@@ -1,3 +1,4 @@
+import { debounce } from 'lodash';
 import { useEffect, useRef } from 'react';
 // import _ from 'lodash';
 
@@ -13,21 +14,23 @@ const useIntersectionObserver = ({
   onChange,
 }: UseIntersectionObserverProps) => {
   const observerRef = useRef<IntersectionObserver | null>(null);
-
+  const debouncedOnChange = debounce((id) => {
+    onChange(id);
+    console.log(id);
+  }, 200);
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            console.log(entry.target.id);
-            onChange(entry.target.id);
+            debouncedOnChange(entry.target.id);
           }
         });
       },
       {
         root: null,
         rootMargin: '-35% 0px -40% 0px',
-        threshold: 0.5,
+        threshold: 0.35,
       }
     );
 

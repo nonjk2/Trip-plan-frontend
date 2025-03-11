@@ -5,10 +5,12 @@ import Chip from './Chip';
 type DropdownProps = {
   onSelect?: (item: string) => void;
   title: string;
+  Icon?: React.JSX.Element;
   list: string[];
+  admin?: boolean;
 };
 
-const Dropdown = ({ list, title, onSelect }: DropdownProps) => {
+const Dropdown = ({ list, title, onSelect, Icon, admin }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef(null);
 
@@ -28,17 +30,35 @@ const Dropdown = ({ list, title, onSelect }: DropdownProps) => {
       aria-hidden={!isOpen}
       aria-label="Dropdown"
     >
-      <Chip
-        state={isOpen}
-        onClick={toggleDropdown}
-        dropdown
-        className={`${
-          isOpen && 'border border-var-primary-500 rounded-b-none'
-        }`}
-        aria-label="Close dropdown"
-      >
-        {title}
-      </Chip>
+      {admin ? (
+        <Chip
+          state={isOpen}
+          Icon={Icon}
+          onClick={toggleDropdown}
+          dropdown
+          admin
+          className={`${
+            isOpen && 'border border-var-primary-500 rounded-b-none'
+          } w-[38.6rem] text-[#939393] bg-[#F7F7F7] border-none h-[4.4rem] admin-dropdown-text rounded-[1.2rem]`}
+          aria-label="Close dropdown"
+        >
+          {title}
+        </Chip>
+      ) : (
+        <Chip
+          state={isOpen}
+          Icon={Icon}
+          onClick={toggleDropdown}
+          dropdown
+          className={`${
+            isOpen && 'border border-var-primary-500 rounded-b-none'
+          }`}
+          aria-label="Close dropdown"
+        >
+          {title}
+        </Chip>
+      )}
+
       <div className="relative">
         {isOpen && (
           <ul className="absolute left-0 shadow-lg z-50 overflow-visible max-h-[26.4rem]">

@@ -1,4 +1,5 @@
 import InnerLayout from '@/components/layout/InnerLayout';
+import AICreates from '@/components/plan/plan-create/AICreates';
 import PlanDayCreates from '@/components/plan/plan-create/PlanDayCreates';
 import PlanDetails from '@/components/plan/plan-create/PlanDetails';
 import { PlanProvider } from '@/providers/contexts/PlanContext';
@@ -33,6 +34,7 @@ const PlanPage = async ({
           </section>
         </InnerLayout>
       </div>
+      <AICreates />
     </PlanProvider>
   );
 };

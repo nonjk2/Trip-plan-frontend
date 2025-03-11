@@ -7,6 +7,7 @@ type ChipProps = {
   dropdown?: boolean;
   search?: boolean;
   Icon?: JSX.Element;
+  admin?: boolean;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 const Chip: React.FC<ChipProps> = ({
@@ -15,6 +16,7 @@ const Chip: React.FC<ChipProps> = ({
   state = true,
   search = false,
   Icon,
+  admin,
   ...rest
 }) => {
   const getChipColor = () => {
@@ -32,7 +34,7 @@ const Chip: React.FC<ChipProps> = ({
     <button
       aria-pressed={state}
       {...rest}
-      className={`${dropdown ? 'chip-dropdown' : 'chip'} ${
+      className={`${dropdown && !admin ? 'chip-dropdown' : 'chip'} ${
         rest.className
       } ${getChipColor()}`}
     >

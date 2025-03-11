@@ -18,7 +18,7 @@ const Page = (props: { searchParams: SearchParams }) => {
       }
       const res: Response = await fetch(`/api/proxy/token/issue/${socialId}`, {
         credentials: 'include',
-        method: 'GET',
+        method: 'POST',
       });
       if (!res.ok) {
         throw Error('로그인고장');

@@ -20,6 +20,10 @@ const nextConfig: NextConfig = {
         source: '/api/proxy/:path*',
         destination: `${SERVER_IP}/:path*`,
       },
+      {
+        source: '/admin/proxy/:path*',
+        destination: `${SERVER_IP}/:path*`,
+      },
     ];
   },
 };

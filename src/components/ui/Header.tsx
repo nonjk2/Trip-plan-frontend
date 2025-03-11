@@ -18,7 +18,6 @@ const Header = () => {
             <PlanSettingRouter />
           </nav>
         </div>
-
         <AuthProfile />
       </div>
     </header>
