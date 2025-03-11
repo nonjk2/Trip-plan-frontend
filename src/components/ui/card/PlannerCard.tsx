@@ -3,6 +3,7 @@ import PlannerListCardContent from './PlannerListCardContent';
 import PlannerMypageCardContent from './PlannerMypageCardContent';
 import Link from 'next/link';
 import { TMainCardList, TMypageCardList } from '@/types/card';
+import defaultThumb from '@/assets/img/default-thumb.png';
 
 interface PlannerCardProps<T extends 'main' | 'mypage'> {
   cardType: T;
@@ -29,7 +30,12 @@ const PlannerCard = <T extends 'main' | 'mypage'>({
             isMainType ? 'pb-[57.7%]' : 'pb-[60.8%]'
           } `}
         >
-          <Image src={thumbnail} alt="썸네일" className="object-cover" fill />
+          <Image
+            src={thumbnail || defaultThumb}
+            alt="썸네일"
+            className="object-cover"
+            fill
+          />
         </div>
 
         {isMainType ? (

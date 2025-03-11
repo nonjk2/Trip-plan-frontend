@@ -6,7 +6,7 @@ export const getMyPlanners = async (
 ): Promise<TMyPlanners> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_IP}/users/myplan?page=${currentPage}&size=6`,
+      `/api/proxy/users/myplan?page=${currentPage}&size=6`,
       {
         method: 'GET',
         headers: {
@@ -37,7 +37,7 @@ export const getDibsPlanners = async (
 ): Promise<TMyPlanners> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_IP}/users/bookmarks?page=${currentPage}&size=6`,
+      `/api/proxy/users/bookmarks?page=${currentPage}&size=6`,
       {
         method: 'GET',
         headers: {
@@ -54,7 +54,7 @@ export const getDibsPlanners = async (
       };
     }
 
-    const data = await response.json();
+    const { data } = await response.json();
     return data;
   } catch (error) {
     console.error(error);
@@ -68,7 +68,7 @@ export const getMyComments = async (
 ): Promise<TMyComments> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_IP}/users/comments?page=${currentPage}&size=10`,
+      `/api/proxy/users/comments?page=${currentPage}&size=10`,
       {
         method: 'GET',
         headers: {
@@ -98,16 +98,13 @@ export const patchEditProfile = async (
   accessToken: string
 ) => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_IP}/users/profile`,
-      {
-        method: 'PATCH',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: profileFormData,
-      }
-    );
+    const response = await fetch(`/api/proxy/users/profile`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: profileFormData,
+    });
 
     if (!response.ok) {
       const errorData = await response.json();

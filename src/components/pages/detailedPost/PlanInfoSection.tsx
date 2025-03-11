@@ -1,7 +1,7 @@
 import ProfileImage from '@/components/ui/ProfileImage';
 import Image from 'next/image';
 import { ICONS } from '@/constants/importImages';
-import testImg from '@/assets/img/test-img.png';
+import defaultThumb from '@/assets/img/default-thumb.png';
 import {
   calculateTripDuration,
   formatDate,
@@ -150,7 +150,12 @@ const PlanInfoSection = ({
           </div>
         </div>
         <div className="relative max-w-[48rem] w-full rounded-[1.6rem] overflow-hidden my-[2.2rem]">
-          <Image src={testImg} alt="썸네일" className="object-cover" fill />
+          <Image
+            src={data.thumbnail || defaultThumb}
+            alt="썸네일"
+            className="object-cover"
+            fill
+          />
         </div>
       </div>
     </section>

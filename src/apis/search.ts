@@ -37,9 +37,9 @@ export const getSearchList = async (
 
   try {
     const response = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_SERVER_IP
-      }/plans/search?size=16&direction=DESC${queryString && '&' + queryString}`,
+      `/api/proxy/plans/search?size=16&direction=DESC${
+        queryString && '&' + queryString
+      }`,
       {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },

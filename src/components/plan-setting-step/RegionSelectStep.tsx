@@ -5,6 +5,7 @@ import DetailedSelector from './plan-setting-step-tab/plan-setting-tab-select/De
 import DetailSearchLocation from './plan-setting-step-tab/plan-setting-tab-search/DetailSearchLocation';
 import cs from 'classnames';
 import BackButton from '../auth/login/BackButton';
+import RegionFilterDetailSearch from '../search/RegionFilterDetailSearch';
 
 type StepType = {
   isFilterType?: boolean;
@@ -55,18 +56,16 @@ const RegionSelectStep = ({
               >
                 지역선택
               </button>
-              {isFilterType || (
-                <button
-                  onClick={() => onChangeTabState('searchTab')}
-                  className={`${
-                    activeTab === 'searchTab'
-                      ? 'text-var-primary-500'
-                      : 'text-var-enable'
-                  } btn-tab`}
-                >
-                  직접선택
-                </button>
-              )}
+              <button
+                onClick={() => onChangeTabState('searchTab')}
+                className={`${
+                  activeTab === 'searchTab'
+                    ? 'text-var-primary-500'
+                    : 'text-var-enable'
+                } btn-tab`}
+              >
+                직접선택
+              </button>
               <div
                 className={`absolute bottom-0 border-b-2 border-b-var-primary-500 w-[10rem] transition-transform duration-300 ${
                   activeTab === 'renderStep'
@@ -87,7 +86,11 @@ const RegionSelectStep = ({
             </div>
           ) : (
             <>
-              <DetailSearchLocation />
+              {isFilterType ? (
+                <RegionFilterDetailSearch />
+              ) : (
+                <DetailSearchLocation />
+              )}
             </>
           )}
         </div>

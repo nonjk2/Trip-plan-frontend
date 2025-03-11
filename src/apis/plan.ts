@@ -9,16 +9,13 @@ export const getPlanInfo = async (
   accessToken: string
 ): Promise<TPlanInfo> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_IP}/plans/${planId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const response = await fetch(`/api/proxy/plans/${planId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     if (!response.ok) {
       const errorData = await response.json();
 
@@ -40,17 +37,14 @@ export const patchToggleStatus = async (
   accessToken: string
 ) => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_IP}/plans/${planId}/status`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ status }),
-      }
-    );
+    const response = await fetch(`/api/proxy/plans/${planId}/status`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({ status }),
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -72,7 +66,7 @@ export const getPlanSchedules = async (
 ): Promise<TPlanSchedules> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_IP}/plans/${planId}/route?day=${day}`,
+      `/api/proxy/plans/${planId}/route?day=${day}`,
       {
         method: 'GET',
         headers: {
@@ -104,9 +98,7 @@ export const getPlanComments = async (
 ): Promise<TPlanComments> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_IP}/plans/${planId}/comments?page=${
-        currentPage - 1
-      }&size=4`,
+      `/api/proxy/plans/${planId}/comments?page=${currentPage - 1}&size=4`,
       {
         method: 'GET',
         headers: {
@@ -140,7 +132,7 @@ export const postAddComment = async (
 ) => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_IP}/plans/${commentData.planId}/comments`,
+      `/api/proxy/plans/${commentData.planId}/comments`,
       {
         method: 'POST',
         headers: {
@@ -166,18 +158,49 @@ export const postAddComment = async (
   }
 };
 
+export const patchComment = async (
+  commentData: {
+    commentId: number;
+    content: string;
+  },
+  accessToken: string
+) => {
+  try {
+    const { commentId, ...dataToPatch } = commentData;
+
+    const response = await fetch(`/api/proxy/plans/comments/${commentId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(dataToPatch),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+
+      throw {
+        message: errorData.message || '댓글 수정 실패',
+        details: errorData.details,
+      };
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const deleteComment = async (id: number, accessToken: string) => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_IP}/plans/comments/${id}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const response = await fetch(`/api/proxy/plans/comments/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -196,16 +219,13 @@ export const deleteComment = async (id: number, accessToken: string) => {
 
 export const postLike = async (planId: number, accessToken: string) => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_IP}/plans/${planId}/like`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const response = await fetch(`/api/proxy/plans/${planId}/like`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     if (!response.ok) {
       const errorData = await response.json();
 
@@ -222,21 +242,64 @@ export const postLike = async (planId: number, accessToken: string) => {
 
 export const deleteLike = async (likeId: number, accessToken: string) => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_IP}/plans/like/${likeId}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const response = await fetch(`/api/proxy/plans/like/${likeId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     if (!response.ok) {
       const errorData = await response.json();
 
       throw {
         message: errorData.message || '좋아요 취소 실패',
+        details: errorData.details,
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const postDibs = async (planId: number, accessToken: string) => {
+  try {
+    const response = await fetch(`/api/proxy/plans/${planId}/bookmarks`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+
+      throw {
+        message: errorData.message || '찜하기 실패',
+        details: errorData.details,
+      };
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const deleteDibs = async (bookmarkId: number, accessToken: string) => {
+  try {
+    const response = await fetch(`/api/proxy/plans/bookmarks/${bookmarkId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+
+      throw {
+        message: errorData.message || '찜하기 취소 실패',
         details: errorData.details,
       };
     }

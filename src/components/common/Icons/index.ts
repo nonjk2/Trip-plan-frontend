@@ -9,6 +9,8 @@ import { default as Traffic } from './Traffic';
 import { default as Restaurant } from './Restaurant';
 import { default as Defalut } from './Defalut';
 import { default as Setting } from './Setting';
+import { default as Plus } from './Plus';
+import { default as Calendar } from './Calendar';
 
 export const Icons = {
   DownTriangle,
@@ -22,6 +24,8 @@ export const Icons = {
   Restaurant,
   Defalut,
   Setting,
+  Plus,
+  Calendar,
 };
 
 export default Icons;
