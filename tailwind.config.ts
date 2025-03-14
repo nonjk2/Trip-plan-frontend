@@ -44,6 +44,7 @@ export default {
       },
       boxShadow: {
         container: '0 2px 16px rgba(0, 0, 0, 0.05)',
+        reviewCard: '0px 0px 10px 0px rgba(0, 0, 0, 0.10)',
       },
     },
   },

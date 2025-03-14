@@ -3,32 +3,48 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 interface PaginationProps {
-  pageType: 'my' | 'dibs' | 'my-comment' | 'plan-comment';
+  pageType:
+    | 'my'
+    | 'dibs'
+    | 'my-review'
+    | 'dibs-review'
+    | 'my-comment'
+    | 'plan'
+    | 'review';
   currentPage: number;
   totalPages: number;
   onPageChange?: (page: number) => void;
-  planId?: number;
+  postId?: number;
 }
 
 const Pagination = ({
   pageType,
   currentPage,
   totalPages,
-  planId,
+  postId,
 }: PaginationProps) => {
   let urlPath = '';
   switch (pageType) {
     case 'my':
-      urlPath = '/my/my-planners';
+      urlPath = '/my/my-post/plans';
       break;
     case 'dibs':
-      urlPath = '/my/dibs-planners';
+      urlPath = '/my/dibs/plans';
+      break;
+    case 'my-review':
+      urlPath = '/my/my-post/reviews';
+      break;
+    case 'dibs-review':
+      urlPath = '/my/dibs/reviews';
       break;
     case 'my-comment':
       urlPath = '/my/my-comments';
       break;
-    case 'plan-comment':
-      urlPath = `/plan-n/${planId}`;
+    case 'plan':
+      urlPath = `/plan-n/${postId}`;
+      break;
+    case 'review':
+      urlPath = `/review/${postId}`;
       break;
     default:
       throw new Error(`Unsupported pageType: ${pageType}`);

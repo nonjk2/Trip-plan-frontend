@@ -1,11 +1,12 @@
-import { TPlanCommmentItem } from '@/types/responseData/detailedPlan';
+import { TCommmentItem } from '@/types/responseData/comments';
 import CommentCard from './CommentCard';
 
 interface CommentsListProps {
-  listData: TPlanCommmentItem[];
+  pageType: 'plan' | 'review';
+  listData: TCommmentItem[];
   accessToken: string;
   socialId: string;
-  planId: number;
+  postId: number;
   currentPage: number;
 }
 

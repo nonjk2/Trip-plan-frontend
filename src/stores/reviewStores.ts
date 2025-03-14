@@ -9,11 +9,12 @@ interface ReviewStore {
     ratings: { [key: string]: number };
     averageRating: number;
   } | null;
-  setSelectedPlace: (place: GooglePlaceAPIType) => void;
+  setSelectedPlace: (place: GooglePlaceAPIType | null) => void;
   setRating: (question: string, rating: number) => void;
   getAverageRating: () => number;
   completeReview: () => void;
   reset: () => void;
+  savedDataReset: () => void;
 }
 
 export const useReviewStore = create<ReviewStore>((set, get) => ({
@@ -46,4 +47,5 @@ export const useReviewStore = create<ReviewStore>((set, get) => ({
     });
   },
   reset: () => set({ selectedPlace: null, ratings: {} }),
+  savedDataReset: () => set({ isReviewCompleted: false, savedReview: null }),
 }));

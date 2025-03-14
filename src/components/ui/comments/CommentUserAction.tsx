@@ -1,40 +1,35 @@
 import Image from 'next/image';
 import { ICONS } from '@/constants/importImages';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { deleteComment } from '@/apis/plan';
 import { Dispatch, SetStateAction } from 'react';
+import { useMyCommentAction } from '@/lib/hooks/queries/mutate/useMyCommentAction';
 
 interface CommentUserActionProps {
+  pageType: 'plan' | 'review';
   isMine: boolean;
   accessToken: string;
   commentId: number;
-  planId: number;
+  postId: number;
   currentPage: number;
   setIsEdit: Dispatch<SetStateAction<boolean>>;
 }
 
 const CommentUserAction = ({
+  pageType,
   isMine,
   accessToken,
   commentId,
-  planId,
+  postId,
   currentPage,
   setIsEdit,
 }: CommentUserActionProps) => {
-  const queryClient = useQueryClient();
-
-  const deleteCommentMutation = useMutation({
-    mutationFn: async () => {
-      await deleteComment(commentId, accessToken);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['plan', planId, 'comments', { currentPage }],
-      });
-    },
+  const { deleteMutation } = useMyCommentAction({
+    pageType,
+    accessToken,
+    postId,
+    currentPage,
   });
 
-  const commentDeleteHandler = () => deleteCommentMutation.mutate();
+  const commentDeleteHandler = () => deleteMutation.mutate(commentId);
 
   const commentEditHandler = () => setIsEdit(true);
 

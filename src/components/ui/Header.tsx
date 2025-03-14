@@ -12,10 +12,19 @@ const Header = () => {
             <LogoWithText />
           </Link>
           <nav className="flex gap-[6rem]">
-            <Link href="/" className="text-[2.4rem] text-white font-semibold">
+            <Link
+              href="/search"
+              className="text-[2.4rem] text-white font-semibold"
+            >
               여행 일정
             </Link>
             <PlanSettingRouter />
+            <Link
+              href="/review/create"
+              className="text-[2.4rem] text-white font-semibold"
+            >
+              여행 후기
+            </Link>
           </nav>
         </div>
 

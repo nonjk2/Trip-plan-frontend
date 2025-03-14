@@ -9,7 +9,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/', request.url));
   }
   if (
-    (pathname.startsWith('/my') || pathname.match(/^\/plan\/[^/]+\/create$/)) &&
+    (pathname.startsWith('/my') ||
+      pathname.match(/^\/plan\/[^/]+\/create$/) ||
+      pathname.startsWith('/review') ||
+      pathname.match(/^\/plan-n\/[^/]+$/)) &&
     !isLoggedIn
   ) {
     return NextResponse.redirect(new URL('/login', request.url));
@@ -20,5 +23,11 @@ export async function middleware(request: NextRequest) {
 
 // ✅ 특정 경로에서만 미들웨어 실행 (불필요한 요청 차단)
 export const config = {
-  matcher: ['/login', '/my/:path*', '/plan/:path*/create'],
+  matcher: [
+    '/login',
+    '/my/:path*',
+    '/plan/:path*/create',
+    '/review/:path*',
+    '/plan-n/:path*',
+  ],
 };

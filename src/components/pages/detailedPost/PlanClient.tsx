@@ -1,9 +1,9 @@
 'use client';
 
 import PlanInfoSection from '@/components/pages/detailedPost/PlanInfoSection';
-import CommentsSection from '@/components/pages/detailedPost/CommentsSection';
 import PlanDayScheduleSection from '@/components/pages/detailedPost/PlanDayScheduleSection';
 import UserActionSection from '@/components/pages/detailedPost/UserActionSection';
+import CommentsSection from '@/components/ui/comments/CommentsSection';
 import Cookies from 'js-cookie';
 import { useQuery } from '@tanstack/react-query';
 import { getPlanInfo } from '@/apis/plan';
@@ -59,7 +59,12 @@ const PlanClient = ({ planId }: PlanClientProps) => {
         writerId={data.socialId}
         {...commonProps}
       />
-      <CommentsSection {...commonProps} />
+      <CommentsSection
+        pageType="plan"
+        postId={planId}
+        accessToken={accessToken}
+        socialId={socialId}
+      />
     </>
   );
 };

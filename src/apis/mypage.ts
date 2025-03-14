@@ -1,4 +1,8 @@
-import { TMyComments, TMyPlanners } from '@/types/responseData/mypage';
+import {
+  TMyComments,
+  TMyPlanners,
+  TMyReviews,
+} from '@/types/responseData/mypage';
 
 export const getMyPlanners = async (
   currentPage: number,
@@ -115,6 +119,68 @@ export const patchEditProfile = async (
 
     return await response.json();
   } catch (error) {
+    throw error;
+  }
+};
+
+export const getMyReviews = async (
+  currentPage: number,
+  accessToken: string
+): Promise<TMyReviews> => {
+  try {
+    const response = await fetch(
+      `/api/proxy/users/reviews?page=${currentPage}&size=4`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      const errorData = await response.json();
+
+      throw {
+        message: errorData.message || '내 리뷰 불러오기 실패',
+      };
+    }
+
+    const { data } = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const getDibsReviews = async (
+  currentPage: number,
+  accessToken: string
+): Promise<TMyReviews> => {
+  try {
+    const response = await fetch(
+      `/api/proxy/users/reviewBookmarks?page=${currentPage}&size=4`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    if (!response.ok) {
+      const errorData = await response.json();
+
+      throw {
+        message: errorData.message || '찜한 리뷰 불러오기 실패',
+      };
+    }
+
+    const { data } = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
     throw error;
   }
 };
