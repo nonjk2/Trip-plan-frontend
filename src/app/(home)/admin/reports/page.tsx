@@ -1,31 +1,34 @@
 'use client';
-import FilterForm from '@/components/admin/FilterForm';
+import ReportComponent from '@/components/admin/ReportComponent';
 
-import SuspenseWrapper from '@/components/admin/SuspenseWrraper';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useState } from 'react';
+import React from 'react';
 
-const taglist = [
-  { link: '', title: '전체', lists: 'all' },
+export const taglist = [
+  { link: '', title: '전체', lists: 'all', category: 0 },
   {
     link: '?list=schedule',
     lists: 'schedule',
     title: '일정',
+    category: 1,
   },
   {
     link: '?list=schedule-comment',
     lists: 'schedule-comment',
     title: '일정 댓글',
+    category: 2,
   },
   {
     link: '?list=review',
     lists: 'review',
     title: '후기',
+    category: 3,
   },
   {
     link: '?list=review-comment',
     lists: 'review-comment',
     title: '후기 댓글',
+    category: 4,
   },
 ];
 
@@ -33,25 +36,6 @@ const Page = () => {
   const params = useSearchParams();
   const lists = params.get('list') ?? 'all';
   const router = useRouter();
-  const [filterFormState, setFilterFormState] = useState<filterFormStateType>(
-    {}
-  );
-
-  const setFilterDateFormState = (
-    date: keyof filterFormStateType,
-    value: Date
-  ) => {
-    setFilterFormState((prev) => ({
-      ...prev,
-      [date]: value,
-    }));
-  };
-  const setFilterReportFormState = (rePort: number) => {
-    setFilterFormState((prev) => ({
-      ...prev,
-      reasonId: rePort,
-    }));
-  };
 
   return (
     <section className="relative w-full flex flex-col gap-[2rem]">
@@ -72,15 +56,11 @@ const Page = () => {
             </div>
           ))}
         </div>
-        <FilterForm
-          category="report"
-          filterFormState={filterFormState}
-          setFilterDateFormState={setFilterDateFormState}
-          setFilterReportFormState={setFilterReportFormState}
+
+        <ReportComponent
+          category={taglist.find((e) => e.lists === lists)?.category || 0}
         />
-        <SuspenseWrapper />
       </div>
-      <div className="w-full border h-full min-h-[36.5rem]"></div>
     </section>
   );
 };

@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { ICONS } from '@/constants/importImages';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteComment } from '@/apis/plan';
+import { Dispatch, SetStateAction } from 'react';
 
 interface CommentUserActionProps {
   isMine: boolean;
@@ -9,6 +10,8 @@ interface CommentUserActionProps {
   commentId: number;
   planId: number;
   currentPage: number;
+  setIsEdit: Dispatch<SetStateAction<boolean>>;
+  openModal: () => void;
 }
 
 const CommentUserAction = ({
@@ -17,6 +20,8 @@ const CommentUserAction = ({
   commentId,
   planId,
   currentPage,
+  setIsEdit,
+  openModal,
 }: CommentUserActionProps) => {
   const queryClient = useQueryClient();
 
@@ -33,6 +38,8 @@ const CommentUserAction = ({
 
   const commentDeleteHandler = () => deleteCommentMutation.mutate();
 
+  const commentEditHandler = () => setIsEdit(true);
+
   const buttonOptions = {
     mine: [
       {
@@ -43,7 +50,7 @@ const CommentUserAction = ({
       {
         key: '수정하기',
         image: { src: ICONS.iconEdit.src, alt: ICONS.iconEdit.alt },
-        clickHandler: () => console.log('..'),
+        clickHandler: commentEditHandler,
       },
     ],
     other: [
@@ -55,7 +62,7 @@ const CommentUserAction = ({
       {
         key: '신고하기',
         image: { src: ICONS.iconSiren.src, alt: ICONS.iconSiren.alt },
-        clickHandler: () => console.log('신고하기..'),
+        clickHandler: () => openModal(),
       },
     ],
   };

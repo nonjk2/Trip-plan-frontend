@@ -6,6 +6,7 @@ import Button from '../common/Button';
 
 import StartDaySelecter from './StartDaySelecter';
 import EndDaySelecter from './EndDaySelecter';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export const REPORT_REASON_MAP: Record<number, string> = {
   1: '스팸홍보 및 도배',
@@ -22,9 +23,11 @@ const FilterForm = ({
   filterFormState,
   setFilterDateFormState,
   setFilterReportFormState,
+  handleDeleteSelected,
 }: {
   category: 'report' | 'point';
   filterFormState: filterFormStateType;
+  handleDeleteSelected: () => void;
   setFilterDateFormState: (
     date: keyof filterFormStateType,
     value: Date
@@ -32,55 +35,72 @@ const FilterForm = ({
   setFilterReportFormState: (rePort: number) => void;
 }) => {
   const CategoryForm = () => {
+    const params = useSearchParams();
+
+    const router = useRouter();
+
+    const searchFilter = () => {
+      const newParams = new URLSearchParams(params.toString());
+
+      if (filterFormState.reasonId) {
+        newParams.set('reasonId', String(filterFormState.reasonId));
+      } else {
+        newParams.delete('reasonId');
+      }
+
+      router.replace(`/admin/reports?${newParams.toString()}`);
+    };
     return (
-      <div className="flex items-center w-full h-[8rem] border-b bg-white shadow-sm">
-        <div className="h-full w-[10rem] flex items-center admin-dropdown-text justify-center">
-          신고 사유
-        </div>
-        <div className="h-full flex items-center">
-          <Dropdown
-            list={Object.values(REPORT_REASON_MAP)}
-            title={
-              filterFormState.reasonId
-                ? REPORT_REASON_MAP[filterFormState.reasonId]
-                : '신고 사유를 선택하세요'
-            }
-            Icon={<Icons.Search admin />}
-            admin
-            onSelect={(item) => {
-              const reasonId = Object.entries(REPORT_REASON_MAP).find(
-                ([, value]) => value === item
-              )?.[0];
-              if (reasonId) setFilterReportFormState(Number(reasonId));
-            }}
-          />
-        </div>
-        <div className="h-full w-[7.2rem] flex items-center admin-dropdown-text justify-center">
-          날짜
-        </div>
+      <div className="flex items-center justify-between w-full h-[8rem] border-b bg-white shadow-sm">
+        <div className="flex items-center">
+          <div className="h-full w-[10rem] flex items-center admin-dropdown-text justify-center">
+            신고 사유
+          </div>
+          <div className="h-full flex items-center">
+            <Dropdown
+              list={Object.values(REPORT_REASON_MAP)}
+              title={
+                filterFormState.reasonId
+                  ? REPORT_REASON_MAP[filterFormState.reasonId]
+                  : '신고 사유를 선택하세요'
+              }
+              Icon={<Icons.Search admin />}
+              admin
+              onSelect={(item) => {
+                const reasonId = Object.entries(REPORT_REASON_MAP).find(
+                  ([, value]) => value === item
+                )?.[0];
+                if (reasonId) setFilterReportFormState(Number(reasonId));
+              }}
+            />
+          </div>
+          <div className="h-full w-[7.2rem] flex items-center admin-dropdown-text justify-center">
+            날짜
+          </div>
 
-        <div
-          id="endday"
-          className="w-[28rem] flex justify-center items-center max-w-[28rem] min-w-[28rem] h-full"
-        >
-          <StartDaySelecter
-            filterFormState={filterFormState}
-            setFilterDateFormState={setFilterDateFormState}
-          />
-        </div>
+          <div
+            id="endday"
+            className="w-[28rem] flex justify-center items-center max-w-[28rem] min-w-[28rem] h-full"
+          >
+            <StartDaySelecter
+              filterFormState={filterFormState}
+              setFilterDateFormState={setFilterDateFormState}
+            />
+          </div>
 
-        <div className="flex items-center justify-center min-w-[4rem] h-full">
-          ~
-        </div>
+          <div className="flex items-center justify-center min-w-[4rem] h-full">
+            ~
+          </div>
 
-        <div
-          id="endday"
-          className="flex justify-center items-center max-w-[28rem] min-w-[28rem] h-full"
-        >
-          <EndDaySelecter
-            filterFormState={filterFormState}
-            setFilterDateFormState={setFilterDateFormState}
-          />
+          <div
+            id="endday"
+            className="flex justify-center items-center max-w-[28rem] min-w-[28rem] h-full"
+          >
+            <EndDaySelecter
+              filterFormState={filterFormState}
+              setFilterDateFormState={setFilterDateFormState}
+            />
+          </div>
         </div>
 
         <div className="flex w-[34.2rem] px-[1.5rem] py-[1.8rem] gap-[1rem]">
@@ -88,6 +108,7 @@ const FilterForm = ({
             size="md"
             btnColor="white"
             className="text-var-primary-500 rounded-[1.2rem]"
+            onClick={searchFilter}
           >
             조회하기
           </Button>
@@ -95,6 +116,7 @@ const FilterForm = ({
             size="md"
             btnColor="white"
             className="text-var-primary-500 rounded-[1.2rem]"
+            onClick={handleDeleteSelected}
           >
             삭제하기
           </Button>

@@ -16,6 +16,7 @@ type FilterStore = {
     removeDetail: (detail: RegionType) => void;
     clearDetails: () => void;
     setSelectDetails: (detail: string) => void;
+    setSearchDetails: (detail: RegionType) => void;
   };
   date: {
     selectedDate: string | null;
@@ -56,6 +57,19 @@ export const useFilterStore = create<FilterStore>((set) => ({
           selectedDetails: [
             ...state.region.selectedDetails,
             { parent: state.region.selectedRegion ?? '', child: detail },
+          ],
+        },
+      })),
+    setSearchDetails: (detail) =>
+      set((state) => ({
+        region: {
+          ...state.region,
+          selectedDetails: [
+            ...state.region.selectedDetails,
+            {
+              child: detail.child,
+              parent: detail.parent,
+            },
           ],
         },
       })),
@@ -180,6 +194,7 @@ export const useFilterStore = create<FilterStore>((set) => ({
           removeDetail: state.region.removeDetail,
           clearDetails: state.region.clearDetails,
           setSelectDetails: state.region.setSelectDetails,
+          setSearchDetails: state.region.setSearchDetails,
         };
       } else if (filterCategory === 'date') {
         newState.date = {

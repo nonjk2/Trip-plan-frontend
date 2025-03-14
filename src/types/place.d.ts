@@ -80,3 +80,37 @@ type KeyWordDocument = {
   place_url: string; // 장소 상세페이지 URL
   distance?: string; // 중심좌표까지의 거리 (단, x, y 파라미터를 준 경우에만 존재)
 };
+
+// ------------------------- 구글 맵
+type MatchedSubstring = {
+  length: number; // 매칭된 부분의 길이
+  offset: number; // 매칭된 부분의 시작 위치
+};
+
+type Term = {
+  value: string; // 검색어 또는 장소 이름에 해당하는 값
+  offset: number; // 검색어 또는 장소 이름의 시작 위치
+};
+
+type StructuredFormatting = {
+  main_text: string; // 장소 이름 (formatted text)
+  secondary_text: string; // 보조 텍스트 (주소나 지역 등)
+};
+
+type GooglePlaceAPIType = {
+  description: string; // 전체 주소
+  matched_substrings: MatchedSubstring[]; // 매칭된 부분들의 정보
+  place_id: string; // 고유한 Google Place ID
+  reference: string; // Google Places API 참조 ID
+  structured_formatting: StructuredFormatting; // 구조화된 장소 정보
+  terms: Term[]; // 장소와 관련된 키워드 (terms 배열)
+  types: string[]; // 장소 유형
+  korean_description?: string; // 한국어 주소
+  location?: { lat: number; lng: number } | null; // 위도, 경도
+  isOpen?: boolean | null; // 영업 정보
+  phone_number?: string | null; // 전화번호
+};
+
+type GooglePlacesAPIResponse = {
+  predictions: GooglePlaceAPIType[]; // 예측된 장소 목록
+};

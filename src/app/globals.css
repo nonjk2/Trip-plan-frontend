@@ -304,3 +304,84 @@
   line-height: 18.2px;
   letter-spacing: 0%;
 }
+
+.admin-table-header {
+  font-family: Pretendard;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 130%;
+  letter-spacing: 0%;
+}
+.admin-table-content {
+  font-family: Pretendard;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 130%;
+  letter-spacing: 0%;
+}
+.report-sub-title {
+  font-family: Pretendard;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 130%;
+  letter-spacing: 0%;
+  color: #6b6b6b;
+}
+.report-sub-content {
+  font-family: Pretendard;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 130%;
+  letter-spacing: 0%;
+  color: #6b6b6b;
+}
+.report-content-text {
+  font-family: Pretendard;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 130%;
+  letter-spacing: 0%;
+  vertical-align: middle;
+}
+.report-writter-text {
+  font-family: Pretendard;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 150%;
+  letter-spacing: 0%;
+  vertical-align: middle;
+}
+
+.divider {
+  border-left: 1px solid gray;
+  margin: 0 10px;
+  height: 20px;
+  background: #00000080;
+
+  display: inline-block;
+}
+
+.admin-report-arrow {
+  font-family: Pretendard;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 28px;
+  letter-spacing: 0%;
+  text-align: center;
+}
+.admin-report-arrow-text {
+  font-family: Pretendard;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 28px;
+  letter-spacing: 0%;
+  text-align: center;
+}
+.admin-point-modal-text {
+  font-family: Pretendard;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 150%;
+  letter-spacing: 0%;
+  vertical-align: middle;
+}

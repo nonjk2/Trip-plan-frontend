@@ -16,4 +16,6 @@ type Profile = {
   nickname: string;
   email: string;
   image: string;
+  userRole: string;
+  point: number;
 };

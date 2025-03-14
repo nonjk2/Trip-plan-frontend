@@ -12,6 +12,9 @@ import { default as Setting } from './Setting';
 import { default as AIIcon } from './AIAvatar';
 import { default as SendMessage } from './SendMessage';
 import { default as Date } from './Date';
+import { default as Plus } from './Plus';
+import { default as Calendar } from './Calendar';
+import { Left, Right } from './Arrow';
 
 export const Icons = {
   DownTriangle,
@@ -28,6 +31,9 @@ export const Icons = {
   AIIcon,
   SendMessage,
   Date,
+  Plus,
+  Calendar,
+  Arrow: { Left, Right },
 };
 
 export default Icons;

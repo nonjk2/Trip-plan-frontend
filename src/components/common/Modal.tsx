@@ -7,6 +7,8 @@ import { createPortal } from 'react-dom';
 interface Props {
   children: React.ReactNode;
   onClose: () => void;
+  isOpen?: boolean;
+  height?: string;
 }
 
 const Modal = ({ children, onClose }: Props) => {
@@ -34,7 +36,12 @@ const Modal = ({ children, onClose }: Props) => {
 
   const modalContent = (
     <section className="modal-background">
-      <div className="modal" ref={ref} tabIndex={-1}>
+      <div
+        className={`modal`}
+        style={{ height: '720px' }}
+        ref={ref}
+        tabIndex={-1}
+      >
         {children}
       </div>
     </section>
