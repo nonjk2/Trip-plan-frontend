@@ -1,31 +1,35 @@
 import Pagination from '@/components/common/Pagination';
-import CommentTextarea from './CommentTextarea';
-import CommentsList from './CommentsList';
-import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { getPlanComments } from '@/apis/plan';
 import Spinner from '@/components/common/Spinner';
+import CommentTextarea from './CommentTextarea';
+import CommentsList from './CommentsList';
+import useGetCommentList from '@/lib/hooks/queries/useGetCommentList';
+import cs from 'classnames';
 
 interface CommentsSectionProps {
-  planId: number;
+  pageType: 'plan' | 'review';
+  postId: number;
   accessToken: string;
   socialId: string;
 }
 
 const CommentsSection = ({
-  planId,
+  pageType,
+  postId,
   accessToken,
   socialId,
 }: CommentsSectionProps) => {
   const searchParams = useSearchParams();
   const currentPageParam = parseInt(searchParams.get('currentPage') || '1', 10);
   const [currentPage, setCurrentPage] = useState(currentPageParam);
-  const commonPageInfoProps = { planId, currentPage };
+  const commonPageInfoProps = { pageType, postId, currentPage };
 
-  const { data, refetch, isLoading, isFetching } = useQuery({
-    queryKey: ['plan', planId, 'comments', { currentPage }],
-    queryFn: () => getPlanComments(planId, accessToken, currentPage),
+  const { data, refetch, isLoading, isFetching } = useGetCommentList({
+    pageType,
+    postId,
+    accessToken,
+    currentPage,
   });
 
   useEffect(() => {
@@ -54,7 +58,12 @@ const CommentsSection = ({
       id="comments-section"
       className="flex flex-col mt-[4rem] gap-[4rem]"
     >
-      <h3 className="text-[2.4rem] text-black font-semibold leading-[2.88rem]">
+      <h3
+        className={cs(' text-black font-semibold ', {
+          'text-[2.4rem] leading-[2.88rem]': pageType === 'plan',
+          'text-[2rem] leading-[3rem]': pageType === 'review',
+        })}
+      >
         댓글 ({data.totalElements})
       </h3>
 
@@ -69,11 +78,7 @@ const CommentsSection = ({
         socialId={socialId}
         {...commonPageInfoProps}
       />
-      <Pagination
-        totalPages={data.totalPages}
-        pageType="plan-comment"
-        {...commonPageInfoProps}
-      />
+      <Pagination totalPages={data.totalPages} {...commonPageInfoProps} />
     </section>
   );
 };

@@ -14,7 +14,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/', request.url));
   }
   if (
-    (pathname.startsWith('/my') || pathname.match(/^\/plan\/[^/]+\/create$/)) &&
+    (pathname.startsWith('/my') ||
+      pathname.match(/^\/plan\/[^/]+\/create$/) ||
+      pathname.startsWith('/review') ||
+      pathname.match(/^\/plan-n\/[^/]+$/)) &&
     !isLoggedIn
   ) {
     return NextResponse.redirect(new URL('/login', request.url));
@@ -47,9 +50,14 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/login',
+
     '/my/:path*',
+
     '/plan/:path*/create',
     '/proxy/reports/:path*',
     '/proxy/admin/:path*',
+    ,
+    '/review/:path*',
+    '/plan-n/:path*',
   ],
 };

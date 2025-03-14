@@ -2,25 +2,18 @@ import { useState } from 'react';
 import CommentUserAction from './CommentUserAction';
 import ProfileImage from '@/components/ui/ProfileImage';
 import { formatDate } from '@/utils/dateUtils';
-import { TPlanCommmentItem } from '@/types/responseData/detailedPlan';
+import { TCommmentItem } from '@/types/responseData/comments';
 import Button from '@/components/common/Button';
 import { z } from 'zod';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { patchComment } from '@/apis/plan';
-import toast from 'react-hot-toast';
-import useReports from '@/lib/hooks/useReports';
-import ReportModal from './ReportModal';
-
-interface IPatchCommentData {
-  commentId: number;
-  content: string;
-}
+import { useMyCommentAction } from '@/lib/hooks/queries/mutate/useMyCommentAction';
+import cs from 'classnames';
 
 interface CommentCardProps {
-  itemData: TPlanCommmentItem;
+  pageType: 'plan' | 'review';
+  itemData: TCommmentItem;
   accessToken: string;
   socialId: string;
-  planId: number;
+  postId: number;
   currentPage: number;
 }
 
@@ -29,44 +22,15 @@ const addCommentSchema = z.string().min(1, '내용을 입력해주세요.');
 const CommentCard = ({ itemData, ...combinedProps }: CommentCardProps) => {
   const [isEdit, setIsEdit] = useState(false);
   const [contentValue, setContentValue] = useState(itemData?.content);
-  const queryClient = useQueryClient();
-  const {
-    openModal: open,
-    isOpen,
-    closeModal,
-    selectedPlan,
-    selectedReason,
-    submitReport,
-    toggleReason,
-    isPending,
-  } = useReports();
 
-  const updateCommentMutation = useMutation({
-    mutationFn: async (patchCommentData: IPatchCommentData) => {
-      await patchComment(patchCommentData, combinedProps.accessToken);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [
-          'plan',
-          combinedProps.planId,
-          'comments',
-          { currentPage: combinedProps.currentPage },
-        ],
-      });
-      toast.success('댓글이 수정되었습니다.');
-    },
-    onError: (error) => {
-      toast.error('댓글 수정에 실패했습니다.');
-      console.log(error.message);
-    },
-    onSettled: () => {
-      setIsEdit(false);
-    },
+  const { updateMutation } = useMyCommentAction({
+    pageType: combinedProps.pageType,
+    accessToken: combinedProps.accessToken,
+    postId: combinedProps.postId,
+    currentPage: combinedProps.currentPage,
+    setIsEdit: setIsEdit,
   });
-  const openModal = () => {
-    open('comment', itemData.commentId);
-  };
+
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContentValue(e.target.value);
   };
@@ -78,7 +42,7 @@ const CommentCard = ({ itemData, ...combinedProps }: CommentCardProps) => {
 
   const editSaveHandler = () => {
     addCommentSchema.parse(contentValue);
-    updateCommentMutation.mutate({
+    updateMutation.mutate({
       commentId: itemData.commentId,
       content: contentValue,
     });
@@ -96,7 +60,16 @@ const CommentCard = ({ itemData, ...combinedProps }: CommentCardProps) => {
   ];
 
   const renderEditState = (
-    <div className="w-full border border-var-primary-500 rounded-lg p-[2rem] text-[2rem] leading-[2.5rem]">
+    <div
+      className={cs(
+        'w-full border border-var-primary-500 rounded-lg p-[2rem]',
+        {
+          'text-[2rem] leading-[2.5rem]': combinedProps.pageType === 'plan',
+          'text-[1.8rem] leading-[2.34rem]':
+            combinedProps.pageType === 'review',
+        }
+      )}
+    >
       <p className="font-medium ">{itemData.nickname}</p>
       <textarea
         className="mt-[1.6rem] w-full h-[5rem] font-normal"
@@ -110,7 +83,10 @@ const CommentCard = ({ itemData, ...combinedProps }: CommentCardProps) => {
               key={item.key}
               size="sm"
               btnColor="white"
-              className="text-[1.2rem] text-var-primary-500 w-[100px] py-[12px]"
+              className={cs('text-[1.2rem] text-var-primary-500 w-[100px] ', {
+                'py-[12px]': combinedProps.pageType === 'plan',
+                'py-[8px]': combinedProps.pageType === 'review',
+              })}
               onClick={item.clickHandler}
             >
               {item.key}
@@ -126,11 +102,22 @@ const CommentCard = ({ itemData, ...combinedProps }: CommentCardProps) => {
       {isEdit ? (
         renderEditState
       ) : (
-        <div key={itemData.commentId} id={`${itemData.commentId}`}>
+        <div key={itemData.commentId}>
           <div className="flex items-center gap-[1.2rem]">
-            <ProfileImage imageUrl={itemData.profileImage || ''} size="m" />
+            <ProfileImage
+              imageUrl={itemData.profileImage || ''}
+              size={combinedProps.pageType === 'plan' ? 'm' : 's'}
+            />
             <div className="flex justify-between items-center w-full">
-              <p className="flex items-center text-[2rem] leading-[2.5rem] gap-[1.2rem]">
+              <p
+                className={cs(
+                  'flex items-center leading-[2.5rem] gap-[1.2rem]',
+                  {
+                    'text-[2rem]': combinedProps.pageType === 'plan',
+                    'text-[1.8rem]': combinedProps.pageType === 'review',
+                  }
+                )}
+              >
                 <span className="text-black font-medium">
                   {itemData.nickname}
                 </span>
@@ -139,13 +126,13 @@ const CommentCard = ({ itemData, ...combinedProps }: CommentCardProps) => {
                 </span>
               </p>
               <CommentUserAction
+                pageType={combinedProps.pageType}
                 isMine={combinedProps.socialId === itemData.socialId}
                 accessToken={combinedProps.accessToken}
                 commentId={itemData.commentId}
-                planId={combinedProps.planId}
+                postId={combinedProps.postId}
                 currentPage={combinedProps.currentPage}
                 setIsEdit={setIsEdit}
-                openModal={openModal}
               />
             </div>
           </div>
@@ -153,26 +140,6 @@ const CommentCard = ({ itemData, ...combinedProps }: CommentCardProps) => {
             <p className="text-[2rem] leading-[2.5rem]">{itemData.content}</p>
           </div>
         </div>
-      )}
-
-      {isOpen && (
-        <ReportModal
-          reportsData={{
-            author: itemData.nickname,
-            id: itemData.commentId,
-            content: itemData.content,
-          }}
-          reports={{
-            openModal,
-            closeModal,
-            isOpen,
-            isPending,
-            selectedPlan,
-            selectedReason,
-            toggleReason,
-            submitReport,
-          }}
-        />
       )}
     </>
   );

@@ -38,7 +38,7 @@ const HeaderProfile = ({ src, nickname }: HeaderProfileProps) => {
     e.preventDefault();
     e.stopPropagation();
     setIsOpen(false);
-    router.push('/my/my-planners');
+    router.push('/my/my-post/plans');
   };
   return (
     <div

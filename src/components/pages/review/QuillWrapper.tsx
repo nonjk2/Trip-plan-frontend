@@ -17,7 +17,7 @@ const QuillWrapper = dynamic(
     const modules = {
       toolbar: {
         container: [
-          [{ header: [1, 2, 3, 4, 5, 6, false] }],
+          [{ size: ['small', false, 'large', 'huge'] }],
           ['bold', 'italic', 'blockquote', 'underline'],
           [{ color: [] }, { background: [] }],
           [{ align: [] }],

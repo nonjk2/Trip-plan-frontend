@@ -9,12 +9,13 @@ import { IMAGES } from '@/constants/importImages';
 
 interface ProfileImageProps {
   imageUrl: string | null;
-  size: 'r' | 'm' | 'l';
+  size: 's' | 'r' | 'm' | 'l';
   priority?: boolean;
 }
 
 const ProfileImage = ({ imageUrl, size, priority }: ProfileImageProps) => {
   const sizeClassName = {
+    s: `w-[4rem] h-[4rem]`,
     r: `w-[4.4rem] h-[4.4rem]`,
     m: `w-[4.8rem] h-[4.8rem]`,
     l: `w-[8rem] h-[8rem]`,

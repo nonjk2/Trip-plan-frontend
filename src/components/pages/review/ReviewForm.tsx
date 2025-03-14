@@ -5,7 +5,7 @@ import ReviewTitleInput from './ReviewTitleInput';
 import ReviewPlaceInfo from './ReviewPlaceInfo';
 import ReviewTextEditor from './ReviewTextEditor';
 import Cookies from 'js-cookie';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useReviewStore } from '@/stores/reviewStores';
 import { getImgUrl, postAddReview } from '@/apis/review';
 import { useMutation } from '@tanstack/react-query';
@@ -21,6 +21,7 @@ interface IpostData {
   content: string;
   visitedDay: Date | null;
   averageRating: number;
+  imageUrl: string[];
 }
 
 const ReviewForm = () => {
@@ -28,7 +29,7 @@ const ReviewForm = () => {
   const [title, setTitle] = useState('');
   const [visitDate, setVisitDate] = useState<Date | null>(null);
   const [content, setContent] = useState('');
-  const { savedReview } = useReviewStore();
+  const { savedReview, reset, savedDataReset } = useReviewStore();
   const router = useRouter();
 
   const srcArray: string[] = []; // src 추출
@@ -85,6 +86,7 @@ const ReviewForm = () => {
         content: endContent,
         visitedDay: visitDate,
         averageRating: savedReview?.averageRating || 0,
+        imageUrl: urlArray,
       };
 
       const validationResult = reviewSchema.safeParse(postData);
@@ -99,6 +101,11 @@ const ReviewForm = () => {
       alert(error);
     }
   };
+
+  useEffect(() => {
+    reset();
+    savedDataReset();
+  }, []);
 
   return (
     <section>
