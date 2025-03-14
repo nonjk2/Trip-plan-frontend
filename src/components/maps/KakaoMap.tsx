@@ -42,7 +42,7 @@ const KakaoMap = ({
       console.log('맵');
       kakao.maps.load(initializeMap);
     }
-  }, []);
+  }, [details]);
 
   const formatDuration = (seconds: number | undefined) => {
     if (!seconds) {

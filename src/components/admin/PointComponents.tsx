@@ -222,7 +222,6 @@ const PointComponents = ({ category }: { category: number }) => {
         category="report"
         filterFormState={filterFormState}
         setFilterDateFormState={setFilterDateFormState}
-        handlePointSent={handlePointSent}
         handleOpenModal={handleOpenModal}
       />
       <PointTable

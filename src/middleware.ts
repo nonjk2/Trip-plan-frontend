@@ -29,7 +29,6 @@ export async function middleware(request: NextRequest) {
   ) {
     const requestHeaders = new Headers(request.headers);
     if (accessToken) {
-      console.log('asdfasfd', accessToken);
       requestHeaders.set('Authorization', `Bearer ${accessToken}`);
     }
 
@@ -50,13 +49,10 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/login',
-
     '/my/:path*',
-
     '/plan/:path*/create',
     '/proxy/reports/:path*',
     '/proxy/admin/:path*',
-    ,
     '/review/:path*',
     '/plan-n/:path*',
   ],

@@ -18,23 +18,12 @@ const NavigationBar = () => {
           item.subItems?.some((sub) => pathname.includes(sub.urlPath));
 
         return item.urlPath === 'storage' ? (
-          // <span
-          //   key={item.urlPath}
-          //   className="flex-1 py-[1.2rem] border-b-[0.2rem] text-black/30 border-black/30 cursor-not-allowed"
-          // >
-          //   {item.title}
-          // </span>
-          <Link
+          <span
             key={item.urlPath}
-            href={item.urlPath}
-            className={`flex-1 py-[1.2rem] border-b-[0.2rem] ${
-              lastPathSegment === item.urlPath
-                ? 'text-black border-black'
-                : 'text-black/30 border-black/30'
-            } `}
+            className="flex-1 py-[1.2rem] border-b-[0.2rem] text-black/30 border-black/30 cursor-not-allowed"
           >
             {item.title}
-          </Link>
+          </span>
         ) : (
           <Link
             key={item.urlPath}

@@ -1,25 +1,9 @@
 'use client';
 import PointComponents from '@/components/admin/PointComponents';
+import { taglistPoints } from '@/components/admin/service';
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
-
-export const taglist = [
-  { link: '', title: '전체', lists: 'all', category: 1 },
-  {
-    link: '?list=schedule',
-    lists: 'schedule',
-    title: '일정작성',
-    category: 2,
-  },
-
-  {
-    link: '?list=review',
-    lists: 'review',
-    title: '후기작성',
-    category: 3,
-  },
-];
 
 const Page = () => {
   const params = useSearchParams();
@@ -30,7 +14,7 @@ const Page = () => {
     <section className="relative w-full flex flex-col gap-[2rem]">
       <div className="w-full h-full min-h-[36.5rem]">
         <div className="flex">
-          {taglist.map((e) => (
+          {taglistPoints.map((e) => (
             <div
               // href={`'${e.link}`}
               key={e.link}
@@ -47,7 +31,7 @@ const Page = () => {
         </div>
 
         <PointComponents
-          category={taglist.find((e) => e.lists === lists)?.category || 0}
+          category={taglistPoints.find((e) => e.lists === lists)?.category || 0}
         />
       </div>
     </section>

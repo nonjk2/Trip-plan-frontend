@@ -7,8 +7,6 @@ import PostUserAction from '@/components/ui/PostUserAction';
 import shareButtonClickHandler from '@/utils/shareUtils';
 import usePostActionLike from '@/lib/hooks/queries/mutate/usePostActionLike';
 import usePostActionDibs from '@/lib/hooks/queries/mutate/usePostActionDibs';
-import useReports from '@/lib/hooks/useReports';
-import ReportModal from './ReportModal';
 
 interface UserActionSectionProps {
   accessToken: string;
@@ -23,7 +21,6 @@ interface UserActionSectionProps {
 const UserActionSection = ({
   accessToken,
   planId,
-  reportData,
   likeId: initialLikeId,
   bookmarkId: initialBookmarkId,
   socialId,
@@ -33,16 +30,7 @@ const UserActionSection = ({
   const [bookmarkId, setBookmarkId] = useState<number | null>(
     initialBookmarkId
   );
-  const {
-    openModal,
-    closeModal,
-    isOpen,
-    selectedPlan,
-    selectedReason,
-    toggleReason,
-    submitReport,
-    isPending,
-  } = useReports();
+
   const likeMutation = usePostActionLike<TPlanInfo>({
     pageType: 'plan',
     pageId: planId,

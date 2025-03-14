@@ -18,12 +18,10 @@ const PointFilterForm = ({
   category,
   filterFormState,
   setFilterDateFormState,
-  handlePointSent,
   handleOpenModal,
 }: {
   category: 'report' | 'point';
   filterFormState: filterFormStateType;
-  handlePointSent: () => void;
   handleOpenModal: () => void;
   setFilterDateFormState: (
     date: keyof filterFormStateType,

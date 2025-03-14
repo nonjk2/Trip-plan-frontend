@@ -5,8 +5,12 @@ import { formatDate } from '@/utils/dateUtils';
 import { TCommmentItem } from '@/types/responseData/comments';
 import Button from '@/components/common/Button';
 import { z } from 'zod';
+
+import useReports from '@/lib/hooks/useReports';
+
 import { useMyCommentAction } from '@/lib/hooks/queries/mutate/useMyCommentAction';
 import cs from 'classnames';
+import ReportModal from '@/components/pages/detailedPost/ReportModal';
 
 interface CommentCardProps {
   pageType: 'plan' | 'review';
@@ -23,6 +27,17 @@ const CommentCard = ({ itemData, ...combinedProps }: CommentCardProps) => {
   const [isEdit, setIsEdit] = useState(false);
   const [contentValue, setContentValue] = useState(itemData?.content);
 
+  const {
+    openModal: open,
+    isOpen,
+    closeModal,
+    selectedPlan,
+    selectedReason,
+    submitReport,
+    toggleReason,
+    isPending,
+  } = useReports();
+
   const { updateMutation } = useMyCommentAction({
     pageType: combinedProps.pageType,
     accessToken: combinedProps.accessToken,
@@ -30,7 +45,9 @@ const CommentCard = ({ itemData, ...combinedProps }: CommentCardProps) => {
     currentPage: combinedProps.currentPage,
     setIsEdit: setIsEdit,
   });
-
+  const openModal = () => {
+    open('comment', itemData.commentId);
+  };
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContentValue(e.target.value);
   };
@@ -102,7 +119,7 @@ const CommentCard = ({ itemData, ...combinedProps }: CommentCardProps) => {
       {isEdit ? (
         renderEditState
       ) : (
-        <div key={itemData.commentId}>
+        <div key={itemData.commentId} id={`${itemData.commentId}`}>
           <div className="flex items-center gap-[1.2rem]">
             <ProfileImage
               imageUrl={itemData.profileImage || ''}
@@ -133,6 +150,7 @@ const CommentCard = ({ itemData, ...combinedProps }: CommentCardProps) => {
                 postId={combinedProps.postId}
                 currentPage={combinedProps.currentPage}
                 setIsEdit={setIsEdit}
+                openModal={openModal}
               />
             </div>
           </div>
@@ -140,6 +158,26 @@ const CommentCard = ({ itemData, ...combinedProps }: CommentCardProps) => {
             <p className="text-[2rem] leading-[2.5rem]">{itemData.content}</p>
           </div>
         </div>
+      )}
+
+      {isOpen && (
+        <ReportModal
+          reportsData={{
+            author: itemData.nickname,
+            id: itemData.commentId,
+            content: itemData.content,
+          }}
+          reports={{
+            openModal,
+            closeModal,
+            isOpen,
+            isPending,
+            selectedPlan,
+            selectedReason,
+            toggleReason,
+            submitReport,
+          }}
+        />
       )}
     </>
   );

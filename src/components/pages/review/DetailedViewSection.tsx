@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import ProfileImage from '@/components/ui/ProfileImage';
 import { ICONS } from '@/constants/importImages';
 import { TDetailedReviewInfo } from '@/types/responseData/review';

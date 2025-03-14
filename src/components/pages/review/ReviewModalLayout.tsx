@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Modal from '@/components/common/Modal';
 import ReviewPlace from './ReviewPlace';
 import { useEffect, useState } from 'react';
