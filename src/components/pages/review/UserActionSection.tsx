@@ -7,6 +7,8 @@ import shareButtonClickHandler from '@/utils/shareUtils';
 import { TDetailedReviewInfo } from '@/types/responseData/review';
 import usePostActionLike from '@/lib/hooks/queries/mutate/usePostActionLike';
 import usePostActionDibs from '@/lib/hooks/queries/mutate/usePostActionDibs';
+import useReports from '@/lib/hooks/useReports';
+import ReportModal from '../detailedPost/ReportModal';
 
 interface UserActionSectionProps {
   accessToken: string;
@@ -15,6 +17,11 @@ interface UserActionSectionProps {
   likeId: number | null;
   bookmarkId: number | null;
   writerId: string;
+  reportsData: {
+    author: string;
+    id: number;
+    content: string;
+  };
 }
 
 const UserActionSection = ({
@@ -24,12 +31,23 @@ const UserActionSection = ({
   bookmarkId: initialBookmarkId,
   socialId,
   writerId,
+  reportsData: reportData,
 }: UserActionSectionProps) => {
   const [likeId, setLikeId] = useState<number | null>(initialLikeId);
   const [bookmarkId, setBookmarkId] = useState<number | null>(
     initialBookmarkId
   );
 
+  const {
+    openModal: open,
+    isOpen,
+    closeModal,
+    selectedPlan,
+    selectedReason,
+    submitReport,
+    toggleReason,
+    isPending,
+  } = useReports();
   const likeMutation = usePostActionLike<TDetailedReviewInfo>({
     pageType: 'review',
     pageId: reviewId,
@@ -37,7 +55,9 @@ const UserActionSection = ({
     accessToken,
     setLikeId,
   });
-
+  const openModal = () => {
+    open('review', reviewId);
+  };
   const dibsMutation = usePostActionDibs<TDetailedReviewInfo>({
     pageType: 'review',
     pageId: reviewId,
@@ -81,7 +101,7 @@ const UserActionSection = ({
     {
       key: '신고하기',
       image: { src: ICONS.iconSiren.src, alt: ICONS.iconSiren.alt },
-      clickHandler: () => console.log('신고하기 버튼 클릭'),
+      clickHandler: openModal,
       isLiked: false,
       isRender: true,
     },
@@ -90,6 +110,21 @@ const UserActionSection = ({
   return (
     <section className="flex justify-between items-center mt-[6rem] pb-[4rem] border-b border-[#D9D9D9]">
       <PostUserAction pageType="review" renderOptions={renderActionOptions} />
+      {isOpen && (
+        <ReportModal
+          reportsData={reportData}
+          reports={{
+            openModal,
+            closeModal,
+            isOpen,
+            isPending,
+            selectedPlan,
+            selectedReason,
+            toggleReason,
+            submitReport,
+          }}
+        />
+      )}
     </section>
   );
 };

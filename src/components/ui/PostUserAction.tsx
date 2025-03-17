@@ -4,6 +4,7 @@ import cs from 'classnames';
 import { ICONS } from '@/constants/importImages';
 
 interface PostUserActionProps {
+  openModal?: () => void;
   pageType: 'plan' | 'review';
   renderOptions: {
     key: string;
@@ -18,7 +19,11 @@ interface PostUserActionProps {
   }[];
 }
 
-const PostUserAction = ({ pageType, renderOptions }: PostUserActionProps) => {
+const PostUserAction = ({
+  pageType,
+  renderOptions,
+  openModal,
+}: PostUserActionProps) => {
   const styleSet = {
     plan: {
       text: 'text-[2rem] font-semibold leading-[2.387rem]',
@@ -66,7 +71,7 @@ const PostUserAction = ({ pageType, renderOptions }: PostUserActionProps) => {
         <button
           type="button"
           className="flex items-center gap-[1.6rem]"
-          onClick={() => console.log('신고하기 클릭')}
+          onClick={openModal}
         >
           <Image
             src={ICONS.iconSiren.src}

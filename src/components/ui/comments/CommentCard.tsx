@@ -46,7 +46,15 @@ const CommentCard = ({ itemData, ...combinedProps }: CommentCardProps) => {
     setIsEdit: setIsEdit,
   });
   const openModal = () => {
-    open('comment', itemData.commentId);
+    let type: 'plan' | 'review' | 'comment' | 'reviewcomment';
+    {
+      if (combinedProps.pageType === 'plan') {
+        type = 'comment';
+      } else {
+        type = 'reviewcomment';
+      }
+    }
+    open(type, itemData.commentId);
   };
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContentValue(e.target.value);

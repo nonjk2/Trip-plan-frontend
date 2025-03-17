@@ -46,6 +46,11 @@ const ReviwClient = ({ reviewId }: ReviewClientProps) => {
           bookmarkId={data.bookmarkId}
           writerId={data.socialId}
           {...commonProps}
+          reportsData={{
+            author: data.nickname,
+            content: data.title,
+            id: reviewId,
+          }}
         />
         <CommentsSection
           pageType="review"
