@@ -4,6 +4,13 @@ import './globals.css';
 import RootProviders from '@/providers/RootProviders';
 import Script from 'next/script';
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  // userScalable: false,
+};
+
 export const metadata: Metadata = {
   title: '마이트립플래너 - 쉽고 빠른 여행 일정 계획',
   description:
