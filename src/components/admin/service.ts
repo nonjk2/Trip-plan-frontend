@@ -1,20 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PaginationState } from '@tanstack/react-table';
-import { getCookieValue } from '../pages/detailedPost/PlanClient';
+
+const fetchFromProxy = async (
+  url: string,
+  method: string = 'GET',
+  body?: object
+) => {
+  const res = await fetch('/api/proxy/admin', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url, method, body }),
+  });
+
+  if (!res.ok) throw new Error(`🚨 요청 실패: ${res.statusText}`);
+  return res.json();
+};
+
 export const fetchReports = async (
   { pageIndex, pageSize }: PaginationState,
   category: number,
   reason?: string
 ) => {
-  await new Promise((resolve) => setTimeout(resolve, 500)); // ✅ 네트워크 지연 시뮬레이션
-  const accessToken = getCookieValue('accessToken');
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  // const accessToken = getCookieValue('accessToken');
 
-  const url = process.env.NEXT_PUBLIC_SERVER_IP;
-  const headers = {
-    Authorization: `Bearer ${accessToken}`,
-  };
+  // const url = process.env.NEXT_PUBLIC_SERVER_IP;
+  // const headers = {
+  //   Authorization: `Bearer ${accessToken}`,
+  // };
 
-  console.log(`🚀 reasonId: ${reason}`);
   let reports: ReportItem[] = [];
   let totalCount = 0;
   let totalPages = 0;
@@ -28,14 +42,17 @@ export const fetchReports = async (
   };
 
   if (category === 0) {
+    // const categoryRequests = [1, 2, 3, 4].map((cat) =>
+    //   fetch(`${url}/admin/reports?category=${cat}${reasonId}`, {
+    //     headers,
+    //   }).then((res) =>
+    //     res.ok
+    //       ? res.json()
+    //       : Promise.reject(new Error(`카테고리 ${cat} 요청 실패`))
+    //   )
+    // );
     const categoryRequests = [1, 2, 3, 4].map((cat) =>
-      fetch(`${url}/admin/reports?category=${cat}${reasonId}`, {
-        headers,
-      }).then((res) =>
-        res.ok
-          ? res.json()
-          : Promise.reject(new Error(`카테고리 ${cat} 요청 실패`))
-      )
+      fetchFromProxy(`/admin/reports?category=${cat}${reasonId}`)
     );
 
     try {
@@ -53,17 +70,29 @@ export const fetchReports = async (
 
       reports = reports.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize);
     } catch (error) {
-      console.error('🚨 데이터 로드 중 오류 발생:', error);
-      throw new Error('🚨 카테고리 0번 데이터 로드 실패');
+      console.error('데이터 로드 중 오류 발생:', error);
+      throw new Error('카테고리 0번 데이터 로드 실패');
     }
   } else {
-    const res = await fetch(
-      `${url}/admin/reports?category=${category}&page=${pageIndex}&size=${pageSize}${reasonId}`,
-      { headers }
-    );
+    // const res = await fetch(
+    //   `${url}/admin/reports?category=${category}&page=${pageIndex}&size=${pageSize}${reasonId}`,
+    //   { headers }
+    // );
+    // const data = await fetchFromProxy(
+    //   `/admin/reports?category=${category}&page=${pageIndex}&size=${pageSize}${reasonId}`
+    // );
+    // if (!res.ok) throw new Error('🚨 데이터 로드 실패');
+    // const data: ReportResponse = await res.json();
 
-    if (!res.ok) throw new Error('🚨 데이터 로드 실패');
-    const data: ReportResponse = await res.json();
+    const data = await fetchFromProxy(
+      `/admin/reports?category=${category}&page=${pageIndex}&size=${pageSize}${reasonId}`
+    );
+    reports = data.data.content.map((report: any) => ({
+      ...report,
+      type: categoryTypeMap[category],
+    }));
+    totalCount = data.data.totalElements;
+    totalPages = data.data.totalPages;
 
     reports = data.data.content.map((report: any) => ({
       ...report,
@@ -83,7 +112,7 @@ export const fetchReports = async (
 
 export const deleteReport = async (report: ReportItem) => {
   let url = '';
-  const accessToken = getCookieValue('accessToken');
+  // const accessToken = getCookieValue('accessToken');
   switch (report.type) {
     case 'plan':
       url = `/plans/${(report as PlanReportItem).planId}`;
@@ -103,18 +132,19 @@ export const deleteReport = async (report: ReportItem) => {
       throw new Error(' 알 수 없는 신고 유형');
   }
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_IP}${url}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  // const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_IP}${url}`, {
+  //   method: 'DELETE',
+  //   headers: {
+  //     Authorization: `Bearer ${accessToken}`,
+  //   },
+  // });
 
-  if (!res.ok) {
-    throw new Error(' 삭제 요청 실패');
-  }
+  // if (!res.ok) {
+  //   throw new Error(' 삭제 요청 실패');
+  // }
 
-  return res.json();
+  // return res.json();
+  return fetchFromProxy(url, 'DELETE');
 };
 
 export const taglistReports = [
@@ -161,69 +191,86 @@ export const taglistPoints = [
     category: 3,
   },
 ];
+// export const fetchPoint = async (
+//   { pageIndex, pageSize }: PaginationState,
+//   category: number
+// ) => {
+//   await new Promise((resolve) => setTimeout(resolve, 500)); // ✅ 네트워크 지연 시뮬레이션
+//   // const accessToken = getCookieValue('accessToken');
+
+//   const url = process.env.NEXT_PUBLIC_SERVER_IP;
+//   const headers = {
+//     Authorization: `Bearer ${accessToken}`,
+//   };
+
+//   // let reports: PointItem[] = [];
+//   let totalCount = 0;
+//   let totalPages = 0;
+
+//   // const categoryTypeMap: Record<number, PointItem['type']> = {
+//   //   1: 'plan',
+//   //   2: 'comment',
+//   //   3: 'review',
+//   //   4: 'reviewComment',
+//   // };
+
+//   const res = await fetch(
+//     `${url}/admin/points?category=${category}&page=${pageIndex}&size=${pageSize}`,
+//     { headers }
+//   );
+
+//   if (!res.ok) throw new Error('🚨 데이터 로드 실패');
+//   const data: PointResponse = await res.json();
+
+//   // reports = data.data.content.map((report: any) => ({
+//   //   ...report,
+//   //   type: categoryTypeMap[category],
+//   // }));
+
+//   totalCount = data.data.totalElements;
+//   totalPages = data.data.totalPages;
+
+//   return {
+//     rows: data.data.content,
+//     pageCount: totalPages,
+//     rowCount: totalCount,
+//   };
+// };
+
 export const fetchPoint = async (
   { pageIndex, pageSize }: PaginationState,
   category: number
 ) => {
-  await new Promise((resolve) => setTimeout(resolve, 500)); // ✅ 네트워크 지연 시뮬레이션
-  const accessToken = getCookieValue('accessToken');
-
-  const url = process.env.NEXT_PUBLIC_SERVER_IP;
-  const headers = {
-    Authorization: `Bearer ${accessToken}`,
-  };
-
-  // let reports: PointItem[] = [];
-  let totalCount = 0;
-  let totalPages = 0;
-
-  // const categoryTypeMap: Record<number, PointItem['type']> = {
-  //   1: 'plan',
-  //   2: 'comment',
-  //   3: 'review',
-  //   4: 'reviewComment',
-  // };
-
-  const res = await fetch(
-    `${url}/admin/points?category=${category}&page=${pageIndex}&size=${pageSize}`,
-    { headers }
+  const data = await fetchFromProxy(
+    `/admin/points?category=${category}&page=${pageIndex}&size=${pageSize}`
   );
-
-  if (!res.ok) throw new Error('🚨 데이터 로드 실패');
-  const data: PointResponse = await res.json();
-
-  // reports = data.data.content.map((report: any) => ({
-  //   ...report,
-  //   type: categoryTypeMap[category],
-  // }));
-
-  totalCount = data.data.totalElements;
-  totalPages = data.data.totalPages;
-
   return {
     rows: data.data.content,
-    pageCount: totalPages,
-    rowCount: totalCount,
+    pageCount: data.data.totalPages,
+    rowCount: data.data.totalElements,
   };
 };
+// export const sentPointFetch = async (pointIds: number[]) => {
+//   console.log(pointIds);
+//   const url = `/admin/points`;
+//   // const accessToken = getCookieValue('accessToken');
+
+//   const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_IP}${url}`, {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${accessToken}`,
+//     },
+//     body: JSON.stringify({ pointIds }),
+//   });
+
+//   if (!res.ok) {
+//     throw new Error(' 지급 요청 실패');
+//   }
+
+//   return res.json();
+// };
 
 export const sentPointFetch = async (pointIds: number[]) => {
-  console.log(pointIds);
-  const url = `/admin/points`;
-  const accessToken = getCookieValue('accessToken');
-
-  const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_IP}${url}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify({ pointIds }),
-  });
-
-  if (!res.ok) {
-    throw new Error(' 지급 요청 실패');
-  }
-
-  return res.json();
+  return fetchFromProxy(`/admin/points`, 'POST', { pointIds });
 };
