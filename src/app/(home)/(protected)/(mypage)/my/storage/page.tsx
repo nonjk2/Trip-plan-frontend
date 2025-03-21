@@ -1,12 +1,16 @@
 'use client';
+
 import CardList from '@/components/pages/my/CardList';
 import { TMypageCardList } from '@/types/card';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-const page = () => {
-  const localStorageItems = localStorage.getItem('planData');
-  if (!localStorageItems) return <></>;
-  const cardListForm = (): TMypageCardList[] => {
+const Page = () => {
+  const [cardList, setCardList] = useState<TMypageCardList[]>([]);
+
+  useEffect(() => {
+    const localStorageItems = localStorage.getItem('planData');
+    if (!localStorageItems) return;
+
     const LocalDataMap: LocalPlanDataType[] = JSON.parse(localStorageItems);
     const NewCardList: TMypageCardList[] = LocalDataMap.map((e) => {
       return {
@@ -18,19 +22,15 @@ const page = () => {
         status: 'PUBLIC',
       };
     });
-    return NewCardList;
-  };
+
+    setCardList(NewCardList);
+  }, []);
 
   return (
     <div className="flex flex-col gap-[6rem]">
-      <CardList listItems={cardListForm() || []} storage />
-      {/* <Pagination
-  pageType="my"
-  currentPage={currentPage}
-  totalPages={data?.totalPages || 1}
-/> */}
+      <CardList listItems={cardList} storage />
     </div>
   );
 };
 
-export default page;
+export default Page;
