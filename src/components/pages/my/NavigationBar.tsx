@@ -20,7 +20,7 @@ const NavigationBar = () => {
         return item.urlPath === 'storage' ? (
           <Link
             key={item.urlPath}
-            href={item.urlPath}
+            href={`/my/${item.urlPath}`}
             className={`flex-1 py-[1.2rem] border-b-[0.2rem] ${'text-black/30 border-black/30'} `}
           >
             {item.title}

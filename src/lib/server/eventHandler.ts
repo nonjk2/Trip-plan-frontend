@@ -46,7 +46,7 @@ export class EventHandler extends EventEmitter {
           break;
 
         case 'thread.run.in_progress':
-          //   console.log('🚀 실행 진행 중...');
+          console.log('실행 진행 중...');
           break;
 
         case 'thread.run.completed':

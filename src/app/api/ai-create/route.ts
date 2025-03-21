@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     threadId: string | null;
     planData: PlanDataType;
   } = await req.json();
-  console.log(clientThreadId);
+  // console.log(clientThreadId);
   const threadIdToUse =
     clientThreadId ??
     (
