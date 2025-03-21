@@ -48,6 +48,14 @@ export async function POST(req: Request) {
   return new Response(
     new ReadableStream({
       async start(controller) {
+        const heartbeat = setInterval(() => {
+          try {
+            controller.enqueue(' ');
+          } catch {
+            clearInterval(heartbeat);
+          }
+        }, 10000);
+
         try {
           const eventHandler = new EventHandler(openai, controller);
           eventHandler.on('event', eventHandler.onEvent.bind(eventHandler));
