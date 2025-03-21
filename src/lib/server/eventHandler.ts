@@ -50,7 +50,7 @@ export class EventHandler extends EventEmitter {
           break;
 
         case 'thread.run.completed':
-          console.log('✅ 실행 완료:', data);
+          console.log(' 실행 완료:', data);
           if (this.controller) {
             this.controller.enqueue('[DONE]');
             this.controller.close();
@@ -59,7 +59,7 @@ export class EventHandler extends EventEmitter {
           break;
 
         case 'thread.run.failed':
-          //   console.error('❌ 실행 실패:', data);
+          //   console.error('실행 실패:', data);
           break;
 
         case 'thread.message.created':
@@ -73,7 +73,7 @@ export class EventHandler extends EventEmitter {
             const chunkText = deltaText.text?.value || '';
 
             if (this.controller) {
-              this.controller.enqueue(chunkText); // ✅ 프론트엔드로 메시지 전송
+              this.controller.enqueue(chunkText);
             }
           }
           break;
@@ -111,7 +111,7 @@ export class EventHandler extends EventEmitter {
                 console.log('🔍 recommend_place 실행 중...');
                 const args = JSON.parse(toolCall.function.arguments);
                 const jsonData = await recommendPlace(args.placeName);
-                console.log('✅ recommendPlace 실행 완료:', jsonData);
+                console.log(' recommendPlace 실행 완료:', jsonData);
                 return {
                   tool_call_id: toolCall.id,
                   output: JSON.stringify(jsonData),
@@ -148,7 +148,7 @@ export class EventHandler extends EventEmitter {
               `[TOOL_OUTPUT]${JSON.stringify(toolOutputs)}\n`
             );
           }
-          continue; // ✅ 루프 종료
+          continue;
         }
         // if (event === 'thread.run.completed') {
         //   if (this.controller) {

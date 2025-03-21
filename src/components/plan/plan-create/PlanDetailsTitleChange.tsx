@@ -3,7 +3,6 @@ import { usePlanContext } from '@/providers/contexts/PlanContext';
 import React, { useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
 
-// ✅ Zod 스키마 (제목 길이 제한: 최소 2자, 최대 10자)
 const titleSchema = z
   .string()
   .min(2, '제목은 최소 2자 이상이어야 합니다.')
@@ -95,7 +94,7 @@ const PlanDetailsTitleChange = () => {
               className={`text-[2rem] font-medium ${
                 error ? 'text-gray-400 cursor-not-allowed' : 'text-blue-500'
               }`}
-              disabled={!!error} // ✅ 오류가 있으면 버튼 비활성화
+              disabled={!!error}
             >
               수정 완료
             </button>

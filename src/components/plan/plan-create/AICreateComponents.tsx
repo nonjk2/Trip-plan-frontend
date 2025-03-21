@@ -19,18 +19,16 @@ const AICreateComponents = () => {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { planData, setPlanData } = usePlanContext();
-  const [streamingMessage, setStreamingMessage] = useState<string>(''); // ✅ 스트리밍 메시지
-  const [isStreaming, setIsStreaming] = useState<boolean>(false); // ✅ 스트리밍 상태
+  const [streamingMessage, setStreamingMessage] = useState<string>('');
+  const [isStreaming, setIsStreaming] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  // ✅ 스크롤을 가장 아래로 이동하는 함수
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  // ✅ 메시지가 추가될 때 자동으로 스크롤
   useEffect(() => {
     scrollToBottom();
   }, [messages, streamingMessage]);
@@ -107,7 +105,7 @@ const AICreateComponents = () => {
           const toolOutput = JSON.parse(toolOutputStr);
           console.log('🛠 툴 실행 결과:', toolOutput);
         } catch (e) {
-          console.error('❌ TOOL_OUTPUT JSON 파싱 오류:', e);
+          console.error('TOOL_OUTPUT JSON 파싱 오류:', e);
         }
         continue;
       }

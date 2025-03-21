@@ -42,7 +42,7 @@ export default function PointTable({
     );
   };
   return (
-    <div className="w-full h-[57.8rem]">
+    <div className="w-full">
       <div className="bg-white shadow-sm rounded-lg">
         <table className="w-full border-collapse border-gray-200 text-gray-700 font-semibold">
           <thead className="h-[4.8rem] bg-white border-b">
@@ -67,16 +67,18 @@ export default function PointTable({
             ))}
           </thead>
 
-          {/* ✅ 테이블 바디 */}
-          <tbody>
+          <tbody className="min-h-[24rem]">
             {dataQuery.isFetching ? (
               Array.from({ length: 10 }).map((_, index) => (
                 <SkeletonRow key={index} columns={ReportTableColumns.length} />
               ))
             ) : table.getRowModel().rows.length === 0 ? (
               <tr key="no-data">
-                <td colSpan={ReportTableColumns.length} className="p-4">
-                  😢 데이터가 없습니다.
+                <td
+                  colSpan={ReportTableColumns.length}
+                  className="w-full h-full flex justify-center items-center admin-empty-text"
+                >
+                  신고 내역을 조회해주세요
                 </td>
               </tr>
             ) : (
@@ -102,44 +104,43 @@ export default function PointTable({
           </tbody>
         </table>
 
-        {/* ✅ 페이지네이션 */}
-        <div className="flex justify-center bg-none items-center h-[4.8rem] gap-2">
-          {/* ◀ 이전 페이지 */}
-          <button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="px-3 py-1 rounded disabled:opacity-50 disabled:bg-none"
-          >
-            <Icons.Arrow.Left />
-          </button>
-
-          {/* ✅ 현재 페이지 그룹 (예: 1~5, 6~10) */}
-          {Array.from(
-            { length: endPage - startPage },
-            (_, i) => startPage + i
-          ).map((pageIndex) => (
+        {table.getRowModel().rows.length !== 0 && (
+          <div className="flex justify-center bg-none items-center h-[4.8rem] gap-2">
             <button
-              key={pageIndex}
-              onClick={() => table.setPageIndex(pageIndex)} // ✅ 클릭 시 해당 페이지 이동
-              className={`px-3 py-1 rounded ${
-                table.getState().pagination.pageIndex === pageIndex
-                  ? 'admin-report-arrow text-[#763AA5]'
-                  : 'admin-report-arrow-text text-[#6B6B6B]'
-              }`}
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+              className="px-3 py-1 rounded disabled:opacity-50 disabled:bg-none"
             >
-              {pageIndex + 1}
+              <Icons.Arrow.Left />
             </button>
-          ))}
 
-          {/* ▶ 다음 페이지 */}
-          <button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="px-3 py-1 rounded disabled:opacity-50"
-          >
-            <Icons.Arrow.Right />
-          </button>
-        </div>
+            {Array.from(
+              { length: endPage - startPage },
+              (_, i) => startPage + i
+            ).map((pageIndex) => (
+              <button
+                key={pageIndex}
+                onClick={() => table.setPageIndex(pageIndex)}
+                className={`px-3 py-1 rounded ${
+                  table.getState().pagination.pageIndex === pageIndex
+                    ? 'admin-report-arrow text-[#763AA5]'
+                    : 'admin-report-arrow-text text-[#6B6B6B]'
+                }`}
+              >
+                {pageIndex + 1}
+              </button>
+            ))}
+
+            {/* ▶ 다음 페이지 */}
+            <button
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+              className="px-3 py-1 rounded disabled:opacity-50"
+            >
+              <Icons.Arrow.Right />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

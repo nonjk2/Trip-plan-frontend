@@ -16,7 +16,6 @@ const Page = () => {
         <div className="flex">
           {taglistReports.map((e) => (
             <div
-              // href={`'${e.link}`}
               key={e.link}
               onClick={() => router.replace(`/admin/reports${e.link}`)}
               className={`w-[12rem] h-[4.5rem] admin-report-link flex justify-center items-center cursor-pointer ${

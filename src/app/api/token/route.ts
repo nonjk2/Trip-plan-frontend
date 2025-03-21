@@ -110,7 +110,7 @@ export async function DELETE() {
       maxAge: 0,
     });
 
-    console.log('✅ 로그아웃 성공: 모든 토큰 삭제');
+    console.log(' 로그아웃 성공: 모든 토큰 삭제');
 
     return NextResponse.json('로그아웃성공', { status: 200 });
   } catch {

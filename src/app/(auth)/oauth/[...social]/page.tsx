@@ -36,11 +36,9 @@ const Page = (props: { searchParams: SearchParams }) => {
       });
 
       if (!cookieResponse.ok) {
-        // console.error('쿠키 저장 실패ddd');
         return;
       }
       router.push('/');
-      // console.log('토큰이 쿠키에 저장됨');
     };
 
     fetchAuthUser();

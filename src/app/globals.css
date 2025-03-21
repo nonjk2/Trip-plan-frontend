@@ -396,3 +396,13 @@
   letter-spacing: 0%;
   vertical-align: middle;
 }
+
+.admin-empty-text {
+  font-family: Pretendard;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 130%;
+  letter-spacing: 0%;
+  text-align: center;
+  color: #b2b2b2;
+}

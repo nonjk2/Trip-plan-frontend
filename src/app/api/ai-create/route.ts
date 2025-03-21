@@ -1,8 +1,8 @@
 import { EventHandler } from '@/lib/server/eventHandler';
-// import { registerPlace } from '@/lib/server/function';
 import OpenAI from 'openai';
 import { TextDeltaBlock } from 'openai/resources/beta/threads/messages.mjs';
-// import { TextDeltaBlock } from 'openai/resources/beta/threads/messages.mjs';
+
+export const runtime = 'nodejs';
 
 const openai = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY || '',
@@ -40,7 +40,6 @@ export async function POST(req: Request) {
       })
     ).id;
 
-  // ✅ 기존 스레드에 새로운 메시지 추가
   await openai.beta.threads.messages.create(threadIdToUse, {
     role: 'user',
     content: message,
@@ -74,19 +73,6 @@ export async function POST(req: Request) {
             }
             if (event === 'thread.run.requires_action') {
               eventHandler.emit('event', { event, data });
-              // // console.log('⚠️ requires_action 감지됨, 툴 실행 중...');
-              // // const toolOutputs = await eventHandler.handleRequiresAction(
-              // //   data,
-              // //   data.id,
-              // //   data.thread_id
-              // // );
-
-              // // console.log(
-              // //   '✅ 툴 실행 완료, 스트리밍 계속 진행... 툴 출력:',
-              // //   toolOutputs
-              // // );
-
-              // continue; // ✅ 툴 실행 후 다시 루프 실행 (스트리밍 유지)
             }
 
             if (event === 'thread.run.completed') {

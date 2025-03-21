@@ -44,7 +44,7 @@ const Button: React.FC<ButtonProps> = ({
         return `bg-var-primary-500 hover:bg-var-primary-600`;
 
       case 'white':
-        return `bg-background text-background border-var-primary-500 dark:text-background border border-1 border-var-primary-500`;
+        return `bg-background border-var-primary-500 dark:text-background border border-1 border-var-primary-500`;
       default:
         return ``;
     }

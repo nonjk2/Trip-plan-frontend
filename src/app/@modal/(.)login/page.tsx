@@ -1,6 +1,5 @@
 'use client';
 import LoginComponent from '@/components/auth/login/LoginComponent';
-// import StaticModal from '@/components/common/StaticModal';
 import dynamic from 'next/dynamic';
 import React from 'react';
 

@@ -98,13 +98,13 @@ const useReports = (): UseReportsReturn => {
   const { mutate: submitReport, isPending } = useMutation({
     mutationFn: reportRequest,
     onSuccess: (data) => {
-      toast.success('✅ 신고가 정상적으로 접수되었습니다.');
-      console.log('✅ 신고 제출 완료:', data);
+      toast.success(' 신고가 정상적으로 접수되었습니다.');
+      console.log(' 신고 제출 완료:', data);
       closeModal();
     },
     onError: (error) => {
       toast.error(error.message || '신고 제출 중 오류가 발생했습니다.');
-      console.error('❌ 신고 제출 중 오류 발생:', error);
+      console.error(' 신고 제출 중 오류 발생:', error);
     },
   });
 

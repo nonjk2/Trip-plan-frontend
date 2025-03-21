@@ -195,7 +195,7 @@ export const taglistPoints = [
 //   { pageIndex, pageSize }: PaginationState,
 //   category: number
 // ) => {
-//   await new Promise((resolve) => setTimeout(resolve, 500)); // ✅ 네트워크 지연 시뮬레이션
+//   await new Promise((resolve) => setTimeout(resolve, 500));
 //   // const accessToken = getCookieValue('accessToken');
 
 //   const url = process.env.NEXT_PUBLIC_SERVER_IP;

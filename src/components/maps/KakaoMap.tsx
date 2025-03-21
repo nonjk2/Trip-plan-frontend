@@ -27,8 +27,8 @@ const KakaoMap = ({
             details[0]?.longitude || 126.978
           ),
           level: 7,
-          draggable: false,
-          scrollwheel: false,
+          // draggable: false,
+          // scrollwheel: false,
           disableDoubleClickZoom: false,
         };
 
