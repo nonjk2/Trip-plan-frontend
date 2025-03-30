@@ -14,6 +14,7 @@ import { default as SendMessage } from './SendMessage';
 import { default as Date } from './Date';
 import { default as Plus } from './Plus';
 import { default as Calendar } from './Calendar';
+import { default as Download } from './Download';
 import { Left, Right } from './Arrow';
 
 export const Icons = {
@@ -33,6 +34,7 @@ export const Icons = {
   Date,
   Plus,
   Calendar,
+  Download,
   Arrow: { Left, Right },
 };
 

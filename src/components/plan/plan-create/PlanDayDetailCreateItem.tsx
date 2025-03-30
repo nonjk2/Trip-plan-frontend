@@ -1,8 +1,9 @@
 import Button from '@/components/common/Button';
 import ScheduleCard from '@/components/ui/schedule/ScheduleCard';
-import React, { useState } from 'react';
+import React, { JSX, useState } from 'react';
 import RegionAdd from './modal/RegionAdd';
 import CostAdd from './modal/CostAdd';
+import { usePlanContext } from '@/providers/contexts/PlanContext';
 type PlanDayDetailCreateItemProps = {
   item: PlanDayType;
   people: number;
@@ -15,12 +16,36 @@ const PlanDayDetailCreateItem = ({
     regionAdd: boolean;
     costAdd: boolean;
   }>({ costAdd: false, regionAdd: false });
+  const { mode } = usePlanContext();
 
   const onClose = (type: 'regionAdd' | 'costAdd') => {
     setOpenModal((prev) => ({ ...prev, [type]: false }));
   };
+
+  const DetailCreateItemWrraper = ({ children }: { children: JSX.Element }) => {
+    return (
+      <article className="flex flex-col gap-[2rem] min-h-[100rem] relative pt-[2.4rem]">
+        {children}
+      </article>
+    );
+  };
+  if (mode === 'full') {
+    return (
+      <DetailCreateItemWrraper>
+        <div className="flex flex-col items-start justify-start sticky top-0">
+          <ScheduleCard
+            day={item.day}
+            people={people}
+            scheduleData={item}
+            date={new Date(item.date)}
+            mode={mode}
+          />
+        </div>
+      </DetailCreateItemWrraper>
+    );
+  }
   return (
-    <article className="flex flex-col gap-[2rem] min-h-[100rem] relative">
+    <DetailCreateItemWrraper>
       {/* <div className="absolute top-0" id={`Day-${item.day}`}></div> */}
       <div className="flex flex-col justify-between sticky top-[20%]">
         <ScheduleCard
@@ -55,7 +80,7 @@ const PlanDayDetailCreateItem = ({
           <CostAdd onClose={() => onClose('costAdd')} day={item.day} />
         )}
       </div>
-    </article>
+    </DetailCreateItemWrraper>
   );
 };
 

@@ -406,3 +406,30 @@
   text-align: center;
   color: #b2b2b2;
 }
+.ai-addtext-selecter {
+  font-family: Pretendard;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+  letter-spacing: 0%;
+}
+
+.ai-addText {
+  font-family: Pretendard;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 130%;
+  letter-spacing: 0%;
+  vertical-align: middle;
+}
+
+#roadviewControl {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  z-index: 999;
+  cursor: pointer;
+}
+/* #roadviewControl.active {
+  background-position: 0 -350px;
+} */

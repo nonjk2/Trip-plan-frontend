@@ -14,6 +14,10 @@ type PlanContextType = {
     setImage: React.Dispatch<React.SetStateAction<File | null>>;
   };
   handleSubmit: () => Promise<void>;
+  mode: 'full' | 'planner';
+  toggleMode: () => void;
+  dayTab: number;
+  setDayHandler: (day: number) => void;
 };
 
 export const PlanContext = createContext<PlanContextType | undefined>(
@@ -36,6 +40,8 @@ export const PlanProvider: React.FC<{
   const [planData, setPlanData] = useState<PlanDataType>(
     initialDatas as PlanDataType
   );
+  const [dayTab, setDayTab] = useState(1);
+  const [mode, setMode] = useState<PlanContextType['mode']>('planner');
   const { planid } = useParams<{ planid: string }>();
   const [image, setImage] = useState<File | null>(null);
   const { setIsEditing } = useExitPrompt();
@@ -45,6 +51,11 @@ export const PlanProvider: React.FC<{
     queryKeyType: ['plans'],
     callbackFn: () => router.push('/'),
   });
+
+  const setDayHandler = (day: number) => {
+    setDayTab(day);
+  };
+
   useEffect(() => {
     setIsEditing(true);
 
@@ -90,6 +101,16 @@ export const PlanProvider: React.FC<{
     mutate(); // 실행
   };
 
+  const toggleMode = () => {
+    setMode((prev) => {
+      if (prev === 'full') {
+        return 'planner';
+      } else {
+        return 'full';
+      }
+    });
+  };
+
   return (
     <PlanContext
       value={{
@@ -100,6 +121,10 @@ export const PlanProvider: React.FC<{
           setImage,
         },
         handleSubmit,
+        mode,
+        toggleMode,
+        setDayHandler,
+        dayTab,
       }}
     >
       {children}

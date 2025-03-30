@@ -1,10 +1,3 @@
-// Meta 타입
-type Meta = {
-  total_count: number; // 검색어에 검색된 문서 수
-  pageable_count: number; // total_count 중 노출 가능 문서 수 (최대: 45)
-  is_end: boolean; // 현재 페이지가 마지막 페이지인지 여부
-};
-
 // Address 타입
 type Address = {
   address_name: string; // 전체 지번 주소

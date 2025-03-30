@@ -2,8 +2,10 @@
 
 import { useDirections } from '@/lib/hooks/queries/useDirectionQuery';
 import { useQuery } from '@tanstack/react-query';
+import Image from 'next/image';
 import { useEffect, useRef } from 'react';
-
+import fullscreen from '@/assets/img/fullscreen.png';
+import { usePlanContext } from '@/providers/contexts/PlanContext';
 const KakaoMap = ({
   detail: details,
   day,
@@ -16,7 +18,7 @@ const KakaoMap = ({
   const polylinesRef = useRef<kakao.maps.Polyline | null>(null);
   const customOverlayRef = useRef<kakao.maps.CustomOverlay | null>(null);
   const { data, isLoading, isError } = useQuery(useDirections(details, day));
-
+  const { mode, toggleMode } = usePlanContext();
   useEffect(() => {
     const initializeMap = () => {
       if (!mapRef.current) {
@@ -55,6 +57,7 @@ const KakaoMap = ({
   const content = `<div class ="label"><span class="left"></span><span class="center">${formatDuration(
     data?.routes[0].summary.duration
   )}</span><span class="right"></span></div>`;
+
   const resetMap = () => {
     if (mapRef.current) {
       // 모든 마커 제거
@@ -155,7 +158,31 @@ const KakaoMap = ({
     drawRoute();
   }, [details, data, content, isLoading, isError]);
 
-  return <div id="map" className="w-full h-[50rem] z-30"></div>;
+  return (
+    <div
+      id="map"
+      className={`z-30 ${
+        mode === 'full' ? 'w-full h-screen' : 'w-full h-[50rem]'
+      } transition-all`}
+    >
+      <div
+        id="roadviewControl"
+        title="전체화면 전환"
+        className={`${
+          mode === 'full' ? 'w-[48px] h-[48px]' : 'w-[32px] h-[32px]'
+        } rounded-[0.8rem] p-[4px] bg-opacity-60 bg-white`}
+        onClick={toggleMode}
+      >
+        <Image
+          src={fullscreen}
+          width={mode === 'full' ? 36 : 24}
+          height={mode === 'full' ? 36 : 24}
+          alt="asd"
+          className={`object-contain`}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default KakaoMap;

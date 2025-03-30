@@ -13,6 +13,7 @@ interface ScheduleCardProps {
   date: Date;
   scheduleData?: PlanDayType | TPlanSchedules;
   isDetailView?: boolean;
+  mode?: 'full' | 'planner';
 }
 
 const ScheduleCard = ({
@@ -20,10 +21,16 @@ const ScheduleCard = ({
   people,
   scheduleData,
   date,
+  mode = 'planner',
   isDetailView = false,
 }: ScheduleCardProps) => {
   return (
-    <div id={`Day${day}`}>
+    <div
+      id={`Day${day}`}
+      className={`${
+        mode === 'full' && 'flex flex-col justify-between gap-[2.8rem]'
+      }`}
+    >
       <div className="flex flex-col gap-[1.6rem] text-[2rem] text-black leading-[3rem]">
         <div className="flex gap-[0.8rem] items-center">
           <div className="absolute top-0" id={`Day-${day}`}></div>
@@ -43,6 +50,7 @@ const ScheduleCard = ({
           </p>
         )}
       </div>
+      {mode === 'full' && <div className="border w-full h-[1px]" />}
 
       <div className="max-h-[60vh] overflow-auto">
         {scheduleData?.detail && scheduleData?.detail.length > 0 ? (

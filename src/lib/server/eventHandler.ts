@@ -110,7 +110,11 @@ export class EventHandler extends EventEmitter {
               if (toolCall.function.name === 'recommend_place') {
                 console.log('🔍 recommend_place 실행 중...');
                 const args = JSON.parse(toolCall.function.arguments);
-                const jsonData = await recommendPlace(args.placeName);
+                const jsonData = await recommendPlace(
+                  args.placeName,
+                  args.description,
+                  args.coord && { x: args.coord.x, y: args.coord.y }
+                );
                 console.log(' recommendPlace 실행 완료:', jsonData);
                 return {
                   tool_call_id: toolCall.id,

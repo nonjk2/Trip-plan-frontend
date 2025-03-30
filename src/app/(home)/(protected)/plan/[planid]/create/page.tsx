@@ -34,6 +34,7 @@ const PlanPage = async ({
           </section>
         </InnerLayout>
       </div>
+      <div id="fullscreen-map-root"></div>
       <AICreates />
     </PlanProvider>
   );
