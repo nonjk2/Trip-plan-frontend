@@ -76,9 +76,13 @@ export default function PointTable({
               <tr key="no-data">
                 <td
                   colSpan={ReportTableColumns.length}
-                  className="w-full h-full flex justify-center items-center admin-empty-text"
+                  className="p-0"
                 >
-                  신고 내역을 조회해주세요
+                  <div className='w-full h-[32rem] flex justify-center items-center admin-empty-text'>
+                  포인트 지급 내역이 없습니다.
+
+                  </div>
+                  
                 </td>
               </tr>
             ) : (
@@ -90,6 +94,7 @@ export default function PointTable({
                   }`}
                   onClick={() => toggleRowSelection(row)}
                 >
+                  
                   {row.getVisibleCells().map((cell) => (
                     <td key={cell.id} className="admin-table-content">
                       {flexRender(

@@ -28,13 +28,13 @@ const AdminLinks = () => {
         >
           <Link href={'/admin/points'}>포인트 지급 목록</Link>
         </div>
-        <div
+        {/* <div
           className={`px-[3.2rem] py-[1.2rem] rounded-[1.2rem] ${
             segment === 'users' ? 'bg-white text-var-primary-500' : 'text-white'
           }  admin-link-text`}
         >
           <Link href={'/admin/users'}>회원 목록</Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );

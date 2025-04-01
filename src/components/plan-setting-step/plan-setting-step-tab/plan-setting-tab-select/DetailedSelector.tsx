@@ -30,8 +30,8 @@ const DetailedSelector = ({ isFilterType = false }: DetailedSelectorProps) => {
               selectedDetails.some(
                 (item) => item.parent === selectedRegion && item.child === e
               )
-                ? 'bg-blue-500 text-background'
-                : 'bg-var-enable-300 text-var-enable-400'
+              ? 'bg-blue-500 text-white'
+              : 'bg-var-enable-300 text-[rgb(0,0,0,0.3)]'
             }`}
             onClick={() => toggleDetail(e)}
           >

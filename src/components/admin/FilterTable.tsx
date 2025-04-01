@@ -77,9 +77,13 @@ export default function ReportTable({
               <tr key="no-data">
                 <td
                   colSpan={ReportTableColumns.length}
-                  className="w-full h-full flex justify-center items-center admin-empty-text"
+                  className="p-0"
                 >
-                  신고 내역을 조회해주세요
+                  <div className='w-full h-[32rem] flex justify-center items-center admin-empty-text'>
+                  신고 내역이 없습니다.
+
+                  </div>
+                  
                 </td>
               </tr>
             ) : (

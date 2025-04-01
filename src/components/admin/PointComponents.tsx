@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import {
   getCoreRowModel,
+  getSortedRowModel,
   PaginationState,
   Row,
   useReactTable,
@@ -26,37 +27,35 @@ const PointComponents = ({ category }: { category: number }) => {
     pageIndex: 0,
     pageSize: 10,
   });
-  const [selectedPointId, setSelectedPointId] = useState<Row<PointItem>[]>([]);
+  // const [selectedPointId, setSelectedPointId] = useState<Row<PointItem>[]>([]);
+  const [rowSelection, setRowSelection] = useState({});
+
   const [filterFormState, setFilterFormState] = useState<filterFormStateType>(
     {}
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const queryClient = useQueryClient();
+  
   const toggleRowSelection = (row: Row<PointItem>) => {
     if (row.original.status === 'COMPLETED') {
       toast.error('이미 포인트를 지급한 사용자입니다.');
       return;
     }
     row.toggleSelected(!row.getIsSelected());
-
-    setSelectedPointId((prev) => {
-      if (prev.some((selectedRow) => selectedRow.id === row.id)) {
-        return prev.filter((selectedRow) => selectedRow.id !== row.id);
-      } else {
-        return [...prev, row];
-      }
-    });
   };
   const handleOpenModal = () => {
-    if (selectedPointId.length === 0) {
+    const selectedRows : Row<PointItem>[] = table.getSelectedRowModel().rows;
+    
+    if (selectedRows.length === 0) {
       toast.error('포인트를 지급할 사용자를 선택해주세요');
       return;
     }
     setIsModalOpen(true);
   };
   const handlePointSent = async () => {
+    const selectedRows : Row<PointItem>[] = table.getSelectedRowModel().rows;
     try {
-      const pointIds = selectedPointId.map((row) => row.original.pointId);
+      const pointIds = selectedRows.map((row) => row.original.pointId);
       await sentPointFetch(pointIds);
       toast.success('포인트 지급이 완료되었습니다.');
       queryClient.invalidateQueries({
@@ -64,7 +63,7 @@ const PointComponents = ({ category }: { category: number }) => {
       });
       table.resetRowSelection();
 
-      setSelectedPointId([]);
+      table.resetRowSelection();
     } catch (error) {
       toast.error('포인트 지급에 실패했습니다.');
       console.error('🚨 포인트 지급 오류:', error);
@@ -81,14 +80,20 @@ const PointComponents = ({ category }: { category: number }) => {
   const table = useReactTable({
     data: dataQuery.data?.rows ?? [],
     columns: PointTableColumns,
-    state: { pagination },
+    state: { pagination , rowSelection },
     onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     rowCount: dataQuery.data?.rowCount,
-
+    getRowId:(row) => row.pointId.toString(),
     manualPagination: true,
+    onRowSelectionChange : setRowSelection,
+    getSortedRowModel: getSortedRowModel()
+    
   });
   // 탭
+
+
+
   const setFilterDateFormState = (
     date: keyof filterFormStateType,
     value: Date
@@ -100,19 +105,21 @@ const PointComponents = ({ category }: { category: number }) => {
   };
   // 탭
 
-  const ModalComponents = () => (
+  const ModalComponents = () => {
+    const selectedRows : Row<PointItem>[] = table.getSelectedRowModel().rows;
+    return (
     <p className="admin-point-modal-text">
-      {selectedPointId.length > 0 ? (
-        selectedPointId.length === 1 ? (
+      {selectedRows.length > 0 ? (
+        selectedRows.length === 1 ? (
           <>
-            {selectedPointId[0].original.nickname} 에게 포인트를
+            {selectedRows[0].original.nickname} 에게 포인트를
             <br />
             지급하시겠습니까?
           </>
         ) : (
           <>
-            {selectedPointId[0].original.nickname} 외{' '}
-            {selectedPointId.length - 1} 명에게
+            {selectedRows[0].original.nickname} 외{' '}
+            {selectedRows.length - 1} 명에게
             <br />
             포인트를 지급하시겠습니까?
           </>
@@ -121,7 +128,7 @@ const PointComponents = ({ category }: { category: number }) => {
         '선택된 사용자가 없습니다.'
       )}
     </p>
-  );
+  )};
 
   return (
     <>

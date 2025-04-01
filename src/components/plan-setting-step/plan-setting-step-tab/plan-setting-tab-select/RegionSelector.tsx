@@ -23,8 +23,8 @@ const RegionSelector = ({ isFilterType = false }: RegionSelectorProps) => {
           btnColor="white"
           className={`border-none ${
             selectedRegion === region
-              ? 'bg-blue-500 text-background'
-              : 'bg-var-enable-300 text-var-enable-400'
+              ? 'bg-blue-500 text-white'
+              : 'bg-var-enable-300 text-[rgb(0,0,0,0.3)]'
           }`}
           onClick={() => setRegion(region)}
         >

@@ -110,7 +110,14 @@ export const PointTableColumns: ColumnDef<PointItem>[] = [
   {
     accessorKey: 'select',
     size: 75,
-    header: () => <div className="flex justify-center">선택</div>,
+    header: ({ table }) => (
+      <div 
+        className="flex justify-center cursor-pointer" 
+        onClick={table.getToggleAllRowsSelectedHandler()}
+      >
+        선택
+      </div>
+    ),
     cell: ({ row }) => (
       <div className="flex justify-center">
         <input
@@ -182,9 +189,21 @@ export const PointTableColumns: ColumnDef<PointItem>[] = [
   },
 
   {
-    size: 299,
+    size: 215,
     accessorKey: 'status',
-    header: '지급상태',
+    header: ({ column }) => (
+      <div
+      onClick={() => column.toggleSorting()}
+      className="cursor-pointer flex items-center"
+    >
+      <span>지급상태</span>
+      <span className="w-[1rem]">
+        {column.getIsSorted() === 'asc' && '🔼'}
+        {column.getIsSorted() === 'desc' && '🔽'}
+        {column.getIsSorted() === false && <span className="invisible">🔽</span>}
+      </span>
+    </div>
+    ),
     cell: (info) => {
       switch (info.row.original.status) {
         case 'PENDING':
@@ -194,6 +213,16 @@ export const PointTableColumns: ColumnDef<PointItem>[] = [
         default:
           return '이상발생';
       }
+    },
+    enableSorting: true,
+    sortingFn: (rowA, rowB, columnId) => {
+      const order = {
+        PENDING: 0,
+        COMPLETED: 1,
+      };
+      const a = rowA.getValue(columnId);
+      const b = rowB.getValue(columnId);
+      return order[a as PointStatus] - order[b as PointStatus];
     },
   },
 ];
