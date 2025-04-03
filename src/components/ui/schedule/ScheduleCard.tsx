@@ -28,7 +28,7 @@ const ScheduleCard = ({
     <div
       id={`Day${day}`}
       className={`${
-        mode === 'full' && 'flex flex-col justify-between gap-[2.8rem]'
+        mode === 'full' && 'flex flex-col justify-between gap-[2.8rem] w-full'
       }`}
     >
       <div className="flex flex-col gap-[1.6rem] text-[2rem] text-black leading-[3rem]">

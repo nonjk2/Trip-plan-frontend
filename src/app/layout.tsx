@@ -57,13 +57,12 @@ export default function RootLayout({
           {children}
           {modal}
           <div id="modal-portal" />
+          <Script
+            defer
+            src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY}&autoload=false`}
+            strategy="beforeInteractive"
+          />
         </RootProviders>
-
-        <Script
-          defer
-          src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY}&autoload=false`}
-          strategy="beforeInteractive"
-        />
       </body>
     </html>
   );

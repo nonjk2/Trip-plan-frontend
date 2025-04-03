@@ -1,11 +1,18 @@
 'use client';
 
 import { useDirections } from '@/lib/hooks/queries/useDirectionQuery';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useEffect, useRef } from 'react';
 import fullscreen from '@/assets/img/fullscreen.png';
 import { usePlanContext } from '@/providers/contexts/PlanContext';
+import RecommendOverlay from './RecommnedOverray';
+import { createRoot } from 'react-dom/client';
+import {
+  ExtendedGooglePlace,
+  GooglePlaceResponse,
+} from '@/lib/hooks/queries/useGooglePlace';
+
 const KakaoMap = ({
   detail: details,
   day,
@@ -15,10 +22,14 @@ const KakaoMap = ({
 }) => {
   const mapRef = useRef<kakao.maps.Map | null>(null);
   const markersRef = useRef<kakao.maps.Marker[]>([]);
+  const recommendMarkersRef = useRef<Record<string, kakao.maps.Marker>>({});
   const polylinesRef = useRef<kakao.maps.Polyline | null>(null);
   const customOverlayRef = useRef<kakao.maps.CustomOverlay | null>(null);
   const { data, isLoading, isError } = useQuery(useDirections(details, day));
-  const { mode, toggleMode } = usePlanContext();
+  const { mode, toggleMode, recommendPlan, setPlanData, planData } =
+    usePlanContext();
+  const infoWindowRef = useRef<kakao.maps.InfoWindow | null>(null);
+
   useEffect(() => {
     const initializeMap = () => {
       if (!mapRef.current) {
@@ -45,6 +56,88 @@ const KakaoMap = ({
       kakao.maps.load(initializeMap);
     }
   }, [details]);
+  const queryClient = useQueryClient();
+
+  const handleSetPlanData = (
+    data: ExtendedGooglePlace | undefined,
+    place: toolOutputData
+  ) => {
+    const Newdata: PlanDetailType = {
+      latitude:
+        data?.geometry.location.lat || Number(place.output.planData.latitude),
+      longitude:
+        data?.geometry.location.lng || Number(place.output.planData.longitude),
+      order: 1,
+      place: data?.name || place.output.planData.place,
+      planCategoryNameId: place.output.planData.planCategoryNameId,
+      streetAddress:
+        data?.formatted_address || place.output.planData.streetAddress,
+    };
+
+    const updatedDays = planData.days.map((dayData) => {
+      if (dayData.day === day + 1) {
+        console.log('들어왔니');
+        return {
+          ...dayData,
+          detail: [
+            ...dayData.detail,
+            { ...Newdata, order: dayData.detail.length + 1 },
+          ],
+        };
+      }
+      return dayData;
+    });
+    const newPlan = {
+      ...planData,
+      days: updatedDays,
+    };
+
+    console.log('🧩 저장될 newPlan:', newPlan, Newdata, day);
+    setPlanData(newPlan);
+    const markerToRemove = recommendMarkersRef.current[place.tool_call_id];
+    if (markerToRemove) {
+      markerToRemove.setMap(null);
+      delete recommendMarkersRef.current[place.tool_call_id];
+    }
+    if (customOverlayRef.current) customOverlayRef.current.setMap(null);
+  };
+
+  const renderRecommendOverlay = async (
+    place: toolOutputData,
+    position: kakao.maps.LatLng,
+    onClose?: () => void
+  ) => {
+    const { place: placeName } = place.output.planData;
+
+    const data: ExtendedGooglePlace | undefined =
+      await queryClient.getQueryData([
+        'googlePlace',
+        placeName,
+        place.tool_call_id,
+      ]);
+    // 일정등록
+
+    const overlayContainer = document.createElement('div');
+    createRoot(overlayContainer).render(
+      <RecommendOverlay
+        setPlanData={() => handleSetPlanData(data, place)}
+        place={place}
+        data={data as GooglePlaceResponse}
+        onClose={() => {
+          if (onClose) onClose();
+        }}
+      />
+    );
+
+    const customOverlay = new kakao.maps.CustomOverlay({
+      content: overlayContainer,
+      position,
+      yAnchor: 1.2,
+    });
+
+    customOverlay.setMap(mapRef.current);
+    return customOverlay;
+  };
 
   const formatDuration = (seconds: number | undefined) => {
     if (!seconds) {
@@ -97,10 +190,61 @@ const KakaoMap = ({
       const marker = new kakao.maps.Marker({
         position: new kakao.maps.LatLng(lat, lng),
         title: title,
+        clickable: true,
       });
       marker.setMap(map);
       markersRef.current.push(marker);
       bounds.extend(marker.getPosition());
+      kakao.maps.event.addListener(marker, 'click', () => {
+        // 기존 창 닫기
+        if (infoWindowRef.current) {
+          infoWindowRef.current.close();
+        }
+
+        // 새 창 생성
+        const iwContent = `<div style="padding:8px 12px;font-size:14px;">${title}</div>`;
+        const infoWindow = new kakao.maps.InfoWindow({
+          content: iwContent,
+          removable: true,
+        });
+
+        infoWindow.open(map, marker);
+        infoWindowRef.current = infoWindow;
+      });
+    };
+
+    const addRecommendMarker = (place: toolOutputData) => {
+      const { latitude, longitude, place: placeName } = place.output.planData;
+
+      const marker = new kakao.maps.Marker({
+        position: new kakao.maps.LatLng(Number(latitude), Number(longitude)),
+        title: placeName,
+        clickable: true,
+        image: new kakao.maps.MarkerImage(
+          'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png',
+          new kakao.maps.Size(24, 35),
+          { offset: new kakao.maps.Point(12, 35) }
+        ),
+      });
+
+      marker.setMap(mapRef.current);
+      markersRef.current.push(marker);
+      recommendMarkersRef.current[place.tool_call_id] = marker;
+
+      kakao.maps.event.addListener(marker, 'click', async () => {
+        if (infoWindowRef.current) infoWindowRef.current.close();
+        if (customOverlayRef.current) customOverlayRef.current.setMap(null);
+
+        const position = new kakao.maps.LatLng(
+          Number(latitude),
+          Number(longitude)
+        );
+        const overlay = await renderRecommendOverlay(place, position, () => {
+          customOverlayRef.current?.setMap(null);
+        });
+
+        customOverlayRef.current = overlay;
+      });
     };
 
     const position = new kakao.maps.LatLng(
@@ -111,12 +255,18 @@ const KakaoMap = ({
     details.forEach((detail) => {
       addMarker(detail.latitude, detail.longitude, detail.place);
     });
+    recommendPlan?.forEach((place) => {
+      addRecommendMarker(place);
+    });
+
     map.setBounds(bounds, 100, 100, 100, 100);
 
     if (!customOverlayRef.current) {
       customOverlayRef.current = new kakao.maps.CustomOverlay({
         position,
         content,
+        yAnchor: 1.2,
+        xAnchor: 0.5,
       });
       customOverlayRef.current.setMap(mapRef.current);
     } else {
@@ -156,7 +306,7 @@ const KakaoMap = ({
     };
 
     drawRoute();
-  }, [details, data, content, isLoading, isError]);
+  }, [details, data, content, isLoading, isError, recommendPlan]);
 
   return (
     <div

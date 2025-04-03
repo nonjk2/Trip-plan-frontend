@@ -16,11 +16,13 @@ import { default as Plus } from './Plus';
 import { default as Calendar } from './Calendar';
 import { default as Download } from './Download';
 import { Left, Right } from './Arrow';
+import { Location, Phone, Timeline } from './MapsIcons';
 
 export const Icons = {
   DownTriangle,
   UpTriangle,
   Close: { CloseIcon, CloseIconBg },
+  MapIcons: { Location, Phone, Timeline },
   Search,
   People,
   Building,

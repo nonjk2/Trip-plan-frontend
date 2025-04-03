@@ -17,7 +17,7 @@ const AICreates = () => {
   return (
     <>
       {/* AI 버튼 */}
-      <section className="fixed bottom-[3.6rem] right-[3.6rem] flex flex-col space-y-[1.2rem]">
+      <section className="fixed bottom-[3.6rem] right-[3.6rem] flex flex-col space-y-[1.2rem] z-50">
         {isBoardOpen && (
           <div className="w-[27.3rem] h-[6.8rem] rounded-[1.2rem] py-[1.2rem] pr-[1.6rem] pl-[2rem] gap-[0.4rem] flex flex-col shadow-shadow-[0px_0px_20px_0px_#0000001A] bg-white">
             <div className="flex justify-between basic-text">

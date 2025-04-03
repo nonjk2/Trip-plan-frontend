@@ -18,6 +18,8 @@ type PlanContextType = {
   toggleMode: () => void;
   dayTab: number;
   setDayHandler: (day: number) => void;
+  recommendPlan: toolOutputData[];
+  setRecommendPlan: (recommendPlan: toolOutputData[]) => void;
 };
 
 export const PlanContext = createContext<PlanContextType | undefined>(
@@ -40,6 +42,7 @@ export const PlanProvider: React.FC<{
   const [planData, setPlanData] = useState<PlanDataType>(
     initialDatas as PlanDataType
   );
+  const [recommendPlan, setRecommendPlan] = useState<toolOutputData[]>([]);
   const [dayTab, setDayTab] = useState(1);
   const [mode, setMode] = useState<PlanContextType['mode']>('planner');
   const { planid } = useParams<{ planid: string }>();
@@ -51,7 +54,10 @@ export const PlanProvider: React.FC<{
     queryKeyType: ['plans'],
     callbackFn: () => router.push('/'),
   });
-
+  const setRecommendPlans = (plan: toolOutputData[]) => {
+    const newPlan = [...recommendPlan, ...plan];
+    setRecommendPlan(newPlan);
+  };
   const setDayHandler = (day: number) => {
     setDayTab(day);
   };
@@ -125,6 +131,8 @@ export const PlanProvider: React.FC<{
         toggleMode,
         setDayHandler,
         dayTab,
+        recommendPlan,
+        setRecommendPlan: setRecommendPlans,
       }}
     >
       {children}
