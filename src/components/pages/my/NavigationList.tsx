@@ -18,11 +18,7 @@ const NavigationList = ({ items, pathname }: NavigationListProps) => {
             pathname.includes(item.urlPath) ||
             item.subItems?.some((sub) => pathname.includes(sub.urlPath));
 
-          return item.urlPath === 'storage' ? (
-            <span key={item.urlPath} className="cursor-not-allowed">
-              {item.title}
-            </span>
-          ) : (
+          return (
             <Link
               key={item.urlPath}
               href={`/my/${item.urlPath}`}

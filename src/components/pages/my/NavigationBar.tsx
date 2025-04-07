@@ -17,27 +17,38 @@ const NavigationBar = () => {
           pathname.includes(item.urlPath) ||
           item.subItems?.some((sub) => pathname.includes(sub.urlPath));
 
-        return item.urlPath === 'storage' ? (
-          <Link
-            key={item.urlPath}
-            href={`/my/${item.urlPath}`}
-            className={`flex-1 py-[1.2rem] border-b-[0.2rem] ${'text-black/30 border-black/30'} `}
-          >
-            {item.title}
-          </Link>
-        ) : (
-          <Link
-            key={item.urlPath}
-            href={`/my/${item.urlPath}`}
-            className={`flex-1 py-[1.2rem] border-b-[0.2rem] ${
-              isActive
-                ? 'text-black border-black'
-                : 'text-black/30 border-black/30'
-            } `}
-          >
-            {item.title}
-          </Link>
-        );
+          return  <Link
+          key={item.urlPath}
+          href={`/my/${item.urlPath}`}
+          className={`flex-1 py-[1.2rem] border-b-[0.2rem] ${
+            isActive
+              ? 'text-black border-black'
+              : 'text-black/30 border-black/30'
+          } `}
+        >
+          {item.title}
+        </Link>
+        // return item.urlPath === 'storage' ? (
+        //   <Link
+        //     key={item.urlPath}
+        //     href={`/my/${item.urlPath}`}
+        //     className={`flex-1 py-[1.2rem] border-b-[0.2rem] ${'text-black/30 border-black/30'} `}
+        //   >
+        //     {item.title}
+        //   </Link>
+        // ) : (
+        //   <Link
+        //     key={item.urlPath}
+        //     href={`/my/${item.urlPath}`}
+        //     className={`flex-1 py-[1.2rem] border-b-[0.2rem] ${
+        //       isActive
+        //         ? 'text-black border-black'
+        //         : 'text-black/30 border-black/30'
+        //     } `}
+        //   >
+        //     {item.title}
+        //   </Link>
+        // );
       })}
     </div>
   );
