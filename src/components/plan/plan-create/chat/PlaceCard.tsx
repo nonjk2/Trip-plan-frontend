@@ -6,7 +6,6 @@ import { openModalType } from '../AICreateComponents';
 
 const PlaceCard = ({
   place,
-
   addOpenModalHandler,
 }: {
   place: toolOutputData;

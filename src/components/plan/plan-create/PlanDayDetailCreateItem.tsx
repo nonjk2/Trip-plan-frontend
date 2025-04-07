@@ -24,7 +24,7 @@ const PlanDayDetailCreateItem = ({
 
   const DetailCreateItemWrraper = ({ children }: { children: JSX.Element }) => {
     return (
-      <article className="flex flex-col gap-[2rem] min-h-[100rem] relative pt-[2.4rem]">
+      <article className="flex flex-col gap-[2rem] min-h-[100rem] w-full relative pt-[2.4rem]">
         {children}
       </article>
     );

@@ -1,16 +1,17 @@
+type googlePlanType = {
+  order: number;
+  place: string;
+  streetAddress: string;
+  latitude: string;
+  longitude: string;
+  planCategoryNameId: number;
+  placeUrl?: string;
+  phone?: string;
+  description?: string;
+  isLifestyleName: boolean;
+};
 type outPutReturnVal = {
-  planData: {
-    order: number;
-    place: string;
-    streetAddress: string;
-    latitude: string;
-    longitude: string;
-    planCategoryNameId: number;
-    placeUrl?: string;
-    phone?: string;
-    description?: string;
-    isLifestyleName: boolean;
-  };
+  planData: googlePlanType;
 };
 type toolOutputData = {
   tool_call_id: string;

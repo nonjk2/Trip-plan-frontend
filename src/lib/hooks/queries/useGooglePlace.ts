@@ -59,6 +59,52 @@ const getPhotoUrl = (photoRef: string, maxWidth = 400): string => {
   //   return `/api/proxy/google/photo?photo_reference=${photoRef}&maxwidth=${maxWidth}`;
   return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=${maxWidth}&photo_reference=${photoRef}&key=${apiKey}`;
 };
+type FetchGooglePlaceParams = {
+  placeName: string;
+  key: string;
+  isLifestyleName?: boolean;
+  coord?: { lat: number; lng: number };
+};
+
+export const fetchGooglePlace = async ({
+  placeName,
+  isLifestyleName,
+  coord,
+}: FetchGooglePlaceParams): Promise<GooglePlaceResponse | undefined> => {
+  if (!placeName) throw new Error('장소 이름이 없습니다.');
+
+  const textRes = await fetch(
+    `/api/proxy/google?query=${encodeURIComponent(placeName)}`
+  );
+
+  if (!textRes.ok) {
+    throw new Error(`Google 프록시 API 요청 실패: ${textRes.status}`);
+  }
+
+  const textData = await textRes.json();
+  if (textData.status !== 'OK') throw new Error('장소 이름이 없습니다.');
+
+  let place = textData.results[0] as GooglePlaceResponse;
+
+  const needsFallback =
+    (!place || !Array.isArray(place.photos) || place.photos.length === 0) &&
+    isLifestyleName &&
+    coord;
+
+  if (needsFallback) {
+    const { lat, lng } = coord!;
+    const nearbyRes = await fetch(
+      `/api/proxy/google/nearby?lat=${lat}&lng=${lng}&radius=300&keyword=${encodeURIComponent(
+        placeName
+      )}&language=ko`
+    );
+    const nearbyData = await nearbyRes.json();
+    place = nearbyData?.results?.[0] as GooglePlaceResponse;
+  }
+
+  return place;
+};
+
 const useGooglePlace = ({
   placeName,
   isLifestyleName = false,

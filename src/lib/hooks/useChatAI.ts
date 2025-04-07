@@ -1,3 +1,4 @@
+import { usePlanContext } from '@/providers/contexts/PlanContext';
 import { useState } from 'react';
 
 interface UseAIChatProps {
@@ -17,6 +18,7 @@ export const useAIChat = ({
   const [streamingMessage, setStreamingMessage] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { setRecommendPlan } = usePlanContext();
 
   const handleSendMessage = async (message?: string, isUserInput = true) => {
     setIsLoading(true);
@@ -53,6 +55,10 @@ export const useAIChat = ({
 
       // 끝
       if (chunk === '[DONE]') {
+        if (toolOutputData) {
+          const recommendData = toolOutputData;
+          setRecommendPlan(recommendData);
+        }
         if (newAiMessage) {
           setMessages((prev) => [
             ...prev,
@@ -96,7 +102,6 @@ export const useAIChat = ({
               output: outputReturnValue,
             };
           });
-          console.log(output);
           toolOutputData = output;
         } catch (e) {
           console.error('TOOL_OUTPUT JSON 파싱 오류:', e);

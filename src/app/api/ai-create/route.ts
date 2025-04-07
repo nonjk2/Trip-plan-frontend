@@ -24,14 +24,14 @@ export async function POST(req: Request) {
     (
       await openai.beta.threads.create({
         messages: [
-          {
-            role: 'assistant',
-            content: `${planData.startDate}부터 ${planData.endDate}까지 
-          ${planData.people}명이 ${planData.category
-              .map((c) => `${c.parent} ${c.child}`)
-              .join(', ')} 지역에서 여행을 하시네요! 🚀 
-          먼저 1일차의 출발지와 목적지를 정해볼까요? 숙박시설도 포함하면 좋아요!`,
-          },
+          // {
+          //   role: 'assistant',
+          //   content: `${planData.startDate}부터 ${planData.endDate}까지
+          // ${planData.people}명이 ${planData.category
+          //     .map((c) => `${c.parent} ${c.child}`)
+          //     .join(', ')} 지역에서 여행을 하시네요! 🚀
+          // 먼저 1일차의 출발지와 목적지를 정해볼까요? 숙박시설도 포함하면 좋아요!`,
+          // },
           {
             role: 'user',
             content: `사용자의 초기 여행정보 : ${JSON.stringify(planData)}`,

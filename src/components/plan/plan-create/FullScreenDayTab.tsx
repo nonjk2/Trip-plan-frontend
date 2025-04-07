@@ -7,7 +7,7 @@ const FullScreenDayTab = () => {
   const { dayTab, planData, setDayHandler } = usePlanContext();
   const DayItem = planData.days[dayTab - 1];
   return (
-    <div className="flex flex-col bg-white p-[2.4rem]">
+    <div className="flex flex-col bg-white p-[2.4rem] min-w-[48.8rem]">
       <div className="flex border-b gap-[4rem] relative min-h-[3.4rem] pb-[4px]">
         {planData.days.map((e) => (
           <button
