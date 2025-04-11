@@ -109,7 +109,7 @@ const PlacesList = ({
         strategy={verticalListSortingStrategy}
       >
         {placesData.map((item, index) => (
-          <SortableItem key={item.order} id={item.order}>
+          <SortableItem key={item.order + index} id={item.order}>
             <div className=" p-[1.2rem] hover:bg-var-primary-50 transition-all group cursor-default">
               <div className="relative flex gap-[2.4rem] items-start ">
                 {switchCategoryIcon(

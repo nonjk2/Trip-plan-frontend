@@ -11,11 +11,13 @@ type PlanDayDetailCreateProps = {
   dayTab: number;
   handleSubmit: () => Promise<void>;
   setDayHandler: (day: number) => void;
+  isGenerating: boolean;
 };
 
 const PlanCreateTab = ({
   dayTab,
   planData,
+  isGenerating,
   handleSubmit,
   setDayHandler,
 }: PlanDayDetailCreateProps) => {
@@ -100,6 +102,7 @@ const PlanCreateTab = ({
             btnColor="white"
             className="text-var-primary-500"
             onClick={handleTempSave}
+            disabled={isGenerating}
           >
             임시저장
           </Button>
@@ -109,6 +112,7 @@ const PlanCreateTab = ({
             // disabled
             className="text-var-primary-500"
             onClick={handleSubmit}
+            disabled={isGenerating}
           >
             완료
           </Button>

@@ -39,7 +39,7 @@ const StreamMessageList = memo(
                   <div className="flex flex-col gap-2 mt-2">
                     {msg.tooloutPutData.map((item) => {
                       if (!item.output.planData) {
-                        return <></>;
+                        return;
                       }
                       return (
                         <PlaceCard

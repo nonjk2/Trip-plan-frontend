@@ -2,6 +2,7 @@
 import useCreatePlan from '@/lib/hooks/queries/mutate/useCreatePlan';
 import useExitPrompt from '@/lib/hooks/useExitprompt';
 import { PlanSchema } from '@/types/schema/planSchema';
+import { toFileFromBase64 } from '@/utils/shareUtils';
 import { useParams, useRouter } from 'next/navigation';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -13,7 +14,10 @@ type PlanContextType = {
     image: File | null;
     setImage: React.Dispatch<React.SetStateAction<File | null>>;
   };
-  handleSubmit: () => Promise<void>;
+  submit: {
+    handleSubmit: () => Promise<void>;
+    isGenerating: boolean;
+  };
   mode: 'full' | 'planner';
   toggleMode: () => void;
   dayTab: number;
@@ -47,6 +51,7 @@ export const PlanProvider: React.FC<{
   const [mode, setMode] = useState<PlanContextType['mode']>('planner');
   const { planid } = useParams<{ planid: string }>();
   const [image, setImage] = useState<File | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
   const { setIsEditing } = useExitPrompt();
   const router = useRouter();
   const { mutate } = useCreatePlan({
@@ -104,7 +109,51 @@ export const PlanProvider: React.FC<{
       return;
     }
 
-    mutate(); // 실행
+    try {
+      setIsGenerating(true);
+      if (!image) {
+        toast.loading('썸네일 이미지 생성 중...');
+
+        const res = await fetch('/api/ai-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            region:
+              planData.days[0].detail.map((e) => e.place).join('-') ||
+              'a travel destination in Korea',
+          }),
+        });
+
+        const { base64 } = await res.json();
+
+        if (!base64) {
+          toast.dismiss();
+          toast.error('AI 이미지 생성 실패');
+          return;
+        }
+        const file = toFileFromBase64(base64, 'jeju-thumbnail.png');
+
+        toast.dismiss();
+        toast.success('이미지 생성 완료!');
+        toast.loading('여행계획 등록중');
+        const formData = new FormData();
+        formData.append(
+          'plan',
+          JSON.stringify({ ...planData, transportation: 'CAR' })
+        );
+        formData.append('thumbnail', file);
+
+        mutate(formData);
+        return;
+      }
+    } catch (err) {
+      console.error('handleSubmit error:', err);
+      toast.dismiss();
+      toast.error('업로드 중 오류 발생');
+    } finally {
+      setIsGenerating(false);
+    }
+    mutate(undefined);
   };
 
   const toggleMode = () => {
@@ -126,7 +175,10 @@ export const PlanProvider: React.FC<{
           image,
           setImage,
         },
-        handleSubmit,
+        submit: {
+          handleSubmit,
+          isGenerating,
+        },
         mode,
         toggleMode,
         setDayHandler,

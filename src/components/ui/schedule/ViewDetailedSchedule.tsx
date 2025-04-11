@@ -11,7 +11,7 @@ const ViewDetailedSchedule = ({ placesData }: ViewDetailedScheduleProps) => {
       {placesData.map((item, index) => {
         return (
           <div
-            key={item.order}
+            key={item.streetAddress + index}
             className="relative flex gap-[2.4rem] items-start"
           >
             {switchCategoryIcon(item.code)}

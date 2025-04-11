@@ -8,9 +8,8 @@ import PlanDayDetailCreate from './PlanDayDetailCreate';
 import PlanCreateTab from './PlanCreateTab';
 
 const PlanDayCreates = () => {
-  const { planData, handleSubmit, mode, dayTab, setDayHandler } =
-    usePlanContext();
-
+  const { planData, submit, mode, dayTab, setDayHandler } = usePlanContext();
+  const { handleSubmit, isGenerating } = submit;
   return (
     <div className="flex w-full">
       <div className="flex-col space-y-[4.8rem]">
@@ -21,6 +20,7 @@ const PlanDayCreates = () => {
         {mode === 'planner' && (
           <PlanCreateTab
             planData={planData}
+            isGenerating={isGenerating}
             handleSubmit={handleSubmit}
             dayTab={dayTab}
             setDayHandler={setDayHandler}

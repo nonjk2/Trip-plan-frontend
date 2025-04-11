@@ -27,6 +27,7 @@ const useCreatePlan = ({
 }: UseCreatePlanProps) => {
   const queryClient = useQueryClient();
   const formData = new FormData();
+  const defaultFormData = new FormData();
   formData.append(
     'plan',
     JSON.stringify({ ...planData, transportation: 'CAR' } as PlanDataType)
@@ -36,14 +37,18 @@ const useCreatePlan = ({
     formData.append('thumbnail', image);
   }
   const mutation = useMutation({
-    mutationFn: async () => createPlan(formData),
+    mutationFn: (customFormData?: FormData) =>
+      createPlan(customFormData ?? defaultFormData),
+
     onSuccess: () => {
+      toast.dismiss();
       toast.success('여행 계획이 성공적으로 등록되었습니다!');
       queryClient.invalidateQueries({ queryKey: queryKeyType });
       if (callbackFn) callbackFn();
     },
     onError: (error) => {
       console.error('업로드 실패:', error);
+      toast.dismiss();
       toast.error('업로드 실패. 다시 시도해주세요.');
     },
   });
