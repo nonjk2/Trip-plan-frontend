@@ -54,11 +54,33 @@ export const PlanProvider: React.FC<{
   const [isGenerating, setIsGenerating] = useState(false);
   const { setIsEditing } = useExitPrompt();
   const router = useRouter();
+
+  const updateSinglePlan = (plans: LocalPlanDataType[]) => {
+    if (plans.length > 0) {
+      localStorage.setItem('plan', JSON.stringify(plans[0]));
+    } else {
+      localStorage.removeItem('plan');
+    }
+  };
+  const callbackFn = () => {
+    router.push('/');
+
+    const storedPlans = localStorage.getItem('planData');
+    const parsedPlans: LocalPlanDataType[] = storedPlans
+      ? JSON.parse(storedPlans)
+      : [];
+
+    const filteredPlans = parsedPlans.filter((e) => e.planId !== planid);
+    localStorage.setItem('planData', JSON.stringify(filteredPlans));
+    updateSinglePlan(filteredPlans);
+  };
+
   const { mutate } = useCreatePlan({
     formData: { planData, image },
     queryKeyType: ['plans'],
-    callbackFn: () => router.push('/'),
+    callbackFn,
   });
+
   const setRecommendPlans = (plan: toolOutputData[]) => {
     const newPlan = [...recommendPlan, ...plan];
     setRecommendPlan(newPlan);
